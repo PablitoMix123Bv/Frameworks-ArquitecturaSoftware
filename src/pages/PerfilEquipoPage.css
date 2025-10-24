@@ -1,0 +1,74 @@
+/* src/pages/PerfilEquipoPage.css */
+
+.perfil-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    border-bottom: 2px solid #EEE;
+    margin-bottom: 30px;
+}
+
+.perfil-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.perfil-header h1 {
+    font-size: 2.5rem;
+    color: #1976D2;
+    margin-bottom: 5px;
+}
+
+.perfil-stats {
+    background-color: #F0F4F8;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.perfil-stats h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.perfil-stats p {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.perfil-jugadores h2 {
+    border-bottom: 2px solid #E0E0E0;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.perfil-jugadores ul {
+    list-style-type: none;
+    padding: 0;
+    columns: 2; /* Muestra la lista en dos columnas si hay muchos jugadores */
+    gap: 20px;
+}
+
+.perfil-jugadores li {
+    background-color: #F8F8F8;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: #1976D2;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    font-weight: 600;
+}

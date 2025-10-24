@@ -1,0 +1,78 @@
+/* src/components/HeaderNav.css */
+
+.header-container {
+    background-color: #2c2c2c; /* Fondo de la barra superior */
+    padding: 10px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.nav-bar-container {
+    background-color: #1976D2; /* El color azul principal de la navegación */
+    display: flex;
+    justify-content: flex-start;
+    padding: 0 20px;
+    gap: 2px; /* Espacio entre pestañas */
+}
+
+.nav-tab {
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s, opacity 0.2s;
+    background-color: rgba(0, 0, 0, 0.1); /* Ligero fondo para pestañas inactivas */
+    border-radius: 0;
+    opacity: 0.8;
+}
+
+/* Estilo para la pestaña ACTIVA (la que se está viendo) */
+.nav-tab.active {
+    background-color: #1565C0; /* Un azul ligeramente más oscuro */
+    opacity: 1;
+    font-weight: bold;
+    position: relative;
+    /* Efecto de borde inferior para resaltar la pestaña activa */
+    border-bottom: 3px solid #FFC107; /* Amarillo de acento */
+}
+
+.nav-tab:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    /* Estilos para el botón de perfil/login */
+}
+
+.auth-controls {
+    display: flex;
+    gap: 10px; /* Separación entre los botones */
+    align-items: center;
+}
+
+.btn-secondary {
+    background-color: #f44336; /* Rojo para cerrar sesión */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #d32f2f;
+}

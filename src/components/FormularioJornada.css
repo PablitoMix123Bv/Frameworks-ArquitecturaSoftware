@@ -1,0 +1,42 @@
+/* src/components/FormularioJornada.css */
+
+/* Reutiliza estilos del modal base (overlay, close-button, h2, form-group) */
+.modal-overlay {
+    /* (Se importan los estilos de fondo y centrado del FormularioTorneo.css o se copian aquí si no se centraliza) */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Contenido del Modal (Caja Blanca) - Clase específica para el tamaño */
+.modal-content-jornada {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px; /* Un poco más ancho que el formulario de torneos */
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #333;
+}
+
+/* Estilos de Formulario (Copiados de FormularioTorneo.css o centralizados en index.css) */
+.modal-content-jornada .form-group {
+    margin-bottom: 15px;
+}
+.modal-content-jornada .form-group-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+.modal-content-jornada .half {
+    flex: 1; 
+}
+/* ... (Asegúrate de que los estilos para input, select y label sean accesibles) */
