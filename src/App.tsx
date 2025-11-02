@@ -9,11 +9,14 @@ import PublicHomePage from './pages/PublicHomePage'; // Nuevo componente de pág
 import PartidosPage from '../src/pages/PartidosPage.tsx'
 import ProtectedRoute from './components/ProtectedRoute';
 import PerfilEquipoPage from './pages/PerfilEquipoPage';
+import InscripcionesPage from './pages/InscripcionesPage';
+import AvisosPage from './pages/AvisosPage.tsx';
+import AvisosAdminPage from './pages/AvisosAdminPage.tsx';
 
 // Componente para la vista pública de resultados (ejemplo)
 const ResultadosPublicos: React.FC = () => <div><PublicHomePage /></div>; 
 // Componente de prueba para la lista de partidos (ejemplo)
-const PartidosPublicos: React.FC = () => <div><PublicHomePage /></div>; 
+// const PartidosPublicos: React.FC = () => <div><PublicHomePage /></div>; 
 
 function App() {
   return (
@@ -30,6 +33,8 @@ function App() {
         <Route path="/public/resultados" element={<ResultadosPublicos />} /> 
         {/* <Route path="/public/partidos" element={<PartidosPublicos />} /> */}
         <Route path= "/public/partidos" element={<PartidosPage/>} />
+        <Route path="/public/inscripciones" element={<InscripcionesPage />} />
+        <Route path="/public/avisos" element={<AvisosPage />} />
         {/* RUTA PROTEGIDA: Ahora envuelve la página de administración */}
         <Route 
           path="/admin/torneos" 
@@ -40,7 +45,14 @@ function App() {
             </ProtectedRoute>
           } 
         />
-        
+        <Route 
+          path="/admin/avisos" 
+          element={
+            <ProtectedRoute requiredRole="administrador">
+              <AvisosAdminPage />
+            </ProtectedRoute>
+          } 
+        />
         {/* -------------------- 2. Rutas de Acceso Restringido (Coordinador) -------------------- */}
         
         {/* RUTA DE LOGIN: Los usuarios van aquí para autenticarse */}

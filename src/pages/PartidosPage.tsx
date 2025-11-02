@@ -6,6 +6,7 @@ import type { Partido } from '../types';
 // Importamos los componentes que ya creamos
 import CardPartido from '../components/CardPartido';
 import HeaderNav from '../components/HeaderNav'; 
+import Footer from '../components/Footer';
 
 // --- 1. Datos Mock (Simulación de la respuesta de la API) ---
 const mockPartidos: Partido[] = [
@@ -107,6 +108,7 @@ const PartidosPage: React.FC = () => {
           ))}
         </div>
       </div>
+      <Footer/>
     </div>
   );
 };

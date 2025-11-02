@@ -1,6 +1,30 @@
 // src/types/index.ts
 
-// Interfaz para la estructura del objeto Torneo
+// src/types/index.ts
+
+// Tipos para la Categoría y Prioridad del Aviso
+export type CategoriaAviso = 'GENERAL' | 'TORNEO' | 'INSCRIPCIÓN';
+export type PrioridadAviso = 'NORMAL' | 'URGENTE';
+
+// Interfaz para el objeto Aviso
+export interface Aviso {
+  id: number;
+  titulo: string;
+  contenido: string;
+  fechaPublicacion: string;
+  autor: string; // Nombre del coordinador que lo publica
+  categoria: CategoriaAviso;
+  prioridad: PrioridadAviso;
+  idTorneoAsociado: number | null; // Null si es un aviso GENERAL
+}
+
+// Props para el formulario de creación/edición de avisos
+export interface FormularioAvisoProps {
+    avisoAEditar: Aviso | null;
+    onClose: () => void;
+    onSuccess: () => void;
+}
+
 export interface Torneo {
   id: number;
   nombre: string;
@@ -66,7 +90,8 @@ export interface Equipo {
   empates: number;
   puntos: number;
   // Añadir la lista de jugadores (por ahora, solo un array de strings)
-  jugadores: string[]; 
+  jugadores: string[];
+  deporte: string; 
 }
 
 // Props para la Tarjeta de Equipo
@@ -88,6 +113,44 @@ export interface ProgramarPartidoData {
 // Interfaz para las Props del formulario de jornada
 export interface FormularioJornadaProps {
   partidoAEditar: ProgramarPartidoData | null;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+// Interfaz para el componente FiltroDeporte
+export interface FiltroDeporteProps {
+  // Función que el componente padre usará para saber qué deporte se seleccionó
+  onFiltroChange: (deporte: string) => void; 
+  // Valor actual del filtro (para resaltarlo en la UI)
+  valorActual: string; 
+}
+
+// src/types/index.ts (Añadir o actualizar)
+
+// Datos que el capitán registra para cada integrante
+export interface JugadorInscripcion {
+  nombre: string;
+  expediente: string; // La matrícula o número de expediente
+  edad: number | ''; // Usamos '' para que el input sea controlable
+  // Simulación de subida de archivo: la URL o un objeto File si manejáramos subida directa
+  fotoUrl: string; 
+  esCapitan: boolean;
+}
+
+// Interfaz para la solicitud de inscripción de un equipo
+export interface SolicitudInscripcion {
+  idTorneo: number;
+  nombreEquipo: string;
+  logoUrl: string; // Logo del equipo (simulación de subida de archivo)
+  integrantes: JugadorInscripcion[];
+  fechaSolicitud: string;
+}
+
+// Props para el formulario de inscripción
+export interface FormularioInscripcionProps {
+  idTorneo: number; // El torneo al que se inscribe
+  minJugadores: number; // Mínimo requerido para la validación
+  maxJugadores: number; // Máximo permitido para la validación
   onClose: () => void;
   onSuccess: () => void;
 }

@@ -1,0 +1,39 @@
+/* src/components/Footer.css */
+
+.app-footer {
+    background-color: #2c2c2c; /* Color oscuro similar al header */
+    color: #cccccc;
+    padding: 20px 0;
+    width: 100%;
+    margin-top: 40px; /* Espacio para separarlo del contenido principal */
+    border-top: 3px solid #1976D2; /* Línea azul para un toque profesional */
+}
+
+.footer-content {
+    max-width: 1400px;
+    width: 95%; 
+    margin: 0 auto; /* Centra el contenido del footer */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap; /* Permite que el contenido se ajuste en pantallas pequeñas */
+}
+
+.footer-section {
+    padding: 10px 0;
+    min-width: 250px;
+}
+
+.footer-section h4 {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.desarrolladores-list {
+    list-style: none;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
