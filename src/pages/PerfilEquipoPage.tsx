@@ -17,6 +17,7 @@ const mockEquipoDetalle: Equipo = {
   empates: 2,
   puntos: 17,
   jugadores: ['Capitán Juan P.', 'Ana López', 'Carlos M.', 'Sofía G.', 'Pedro R.'],
+  deporte: 'FÚTBOL',
 };
 
 const PerfilEquipoPage: React.FC = () => {

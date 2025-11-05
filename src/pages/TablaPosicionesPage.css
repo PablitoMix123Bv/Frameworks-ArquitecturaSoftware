@@ -1,0 +1,89 @@
+/* src/pages/TablaPosicionesPage.css */
+
+.tabla-posiciones-page {
+    padding: 30px;
+}
+
+.tabla-posiciones-page h1 {
+    color: #1976D2;
+    margin-bottom: 20px;
+}
+
+/* --- Filtro de Torneo --- */
+.filtro-torneo {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filtro-torneo label {
+    font-weight: bold;
+    color: #333;
+}
+
+.filtro-torneo select {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #CCC;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* --- Estilos de la Tabla --- */
+.tabla-responsive {
+    overflow-x: auto; /* Permite desplazamiento horizontal en móviles */
+}
+
+.tabla-clasificacion {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-clasificacion th, .tabla-clasificacion td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.tabla-clasificacion th {
+    background-color: #1976D2;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.col-posicion {
+    font-weight: bold;
+    width: 5%;
+}
+
+.col-equipo {
+    text-align: left;
+    font-weight: 500;
+    width: 40%;
+}
+
+.col-puntos {
+    background-color: #E8F5E9; /* Fondo verde claro para los puntos */
+    font-weight: 900 !important;
+    color: #388E3C; /* Verde oscuro */
+    font-size: 1.1rem;
+}
+
+.fila-par {
+    background-color: #FAFAFA;
+}
+
+.equipo-nombre-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.equipo-logo {
+    font-size: 1.2rem;
+}

@@ -1,20 +1,23 @@
-import { useState, type FormEvent } from "react";
-import "./index.css"; // importa tu CSS aquí
-import { useNavigate } from "react-router-dom";
-import { useAuth} from './context/AuthContext'
+// src/Login.tsx
 
+import React, { useState, type FormEvent } from "react";
+import "./Login.css"; // Estilos dedicados al componente Login
+import { useNavigate } from "react-router-dom";
+import { useAuth} from '../context/AuthContext'
+import type { Rol } from '../context/AuthContext'; // Importamos el tipo Rol
 
 export default function Login() {
   const [isPosting, setIsPosting] = useState(false);
   const [error, setError] = useState("");
 
-    // ... (useState declarations)
   const navigate = useNavigate();
-  const { login } = useAuth(); // Obtenemos la función 'login' del Contexto
+  const { login } = useAuth(); // Obtiene la función 'login' del Contexto
 
+  // Usuarios simulados para la demostración
   const validUser = {
-    email: "admin@uaq.mx",
-    password: "1234",
+    admin: { email: "admin@uaq.mx", password: "1234" },
+    jugador: { email: "jugador@uaq.mx", password: "1234" },
+    arbitro: { email: "arbitro@uaq.mx", password: "1234" }
   };
 
   const handleLogin = (event: FormEvent<HTMLFormElement>) => {
@@ -26,23 +29,25 @@ export default function Login() {
     const password = formData.get("password") as string;
 
     setTimeout(() => {
-      if (email === validUser.email && password === validUser.password) {
-        
-        // Simulación de validación de rol
-        const rol = email.includes('admin') ? 'administrador' : 'estudiante';
-        
-        // LLAMADA AL CONTEXTO: Guardamos el estado del usuario globalmente
-        login(email, rol as 'administrador' | 'estudiante'); 
-        
+      let userRole: Rol | null = null;
+      let redirectPath = '';
+
+      // 1. Simulación de la autenticación y asignación de rol
+      if (email === validUser.admin.email && password === validUser.admin.password) {
+        userRole = 'administrador';
+        redirectPath = "/admin/torneos";
+      } else if (email === validUser.jugador.email && password === validUser.jugador.password) {
+        userRole = 'jugador';
+        redirectPath = "/perfil/mi-equipo";
+      } else if (email === validUser.arbitro.email && password === validUser.arbitro.password) {
+        userRole = 'árbitro';
+        redirectPath = "/arbitro/dashboard";
+      }
+
+      if (userRole) {
+        login(email, userRole); // Guarda el rol en el Contexto
         setError("");
-        
-        // Redirigimos al área que corresponde al rol
-        if (rol === 'administrador') {
-          navigate("/admin/torneos");
-        } else {
-          // Si es estudiante, lo enviamos a una ruta de perfil o la pública
-          navigate("/public/equipos"); 
-        }
+        navigate(redirectPath); // Redirige al dashboard
       } else {
         setError("Correo o contraseña incorrectos");
         setIsPosting(false);
@@ -53,7 +58,7 @@ export default function Login() {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h1>Torneos UAQ</h1>
+        <h1>SportFlow FIF</h1>
         <p>Inicia sesión para continuar</p>
 
         {error && <p className="error">{error}</p>}
@@ -65,7 +70,7 @@ export default function Login() {
               type="email"
               id="email"
               name="email"
-              placeholder="ejemplo@correo.com"
+              placeholder="admin@uaq.mx o jugador@uaq.mx"
               required
             />
           </div>

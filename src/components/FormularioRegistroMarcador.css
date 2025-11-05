@@ -1,0 +1,112 @@
+/* src/components/FormularioRegistroMarcador.css */
+
+.marcador-control-box {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: #333;
+    text-align: center;
+}
+
+/* --- Visor de Marcador --- */
+.marcador-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    gap: 30px;
+}
+
+.score-equipo {
+    font-size: 4rem;
+    font-weight: 900;
+    color: white;
+    background-color: #1976D2; /* Azul fuerte */
+    padding: 20px 40px;
+    border-radius: 10px;
+    min-width: 150px;
+    text-align: center;
+}
+
+.separator-marcador {
+    font-size: 3rem;
+    color: #555;
+}
+
+/* --- Visor de Tiempo --- */
+.tiempo-control {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #E0E0E0;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.tiempo-display {
+    font-size: 2rem;
+    color: #D32F2F; /* Rojo para el cronómetro */
+}
+
+.cuarto-display {
+    font-size: 1.2rem;
+    align-self: center;
+}
+
+/* --- Controles de Puntaje --- */
+.score-controles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.control-local, .control-visitante {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.score-controles button {
+    padding: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    background-color: #4CAF50; /* Verde para sumar puntos */
+    color: white;
+}
+
+.score-controles button:nth-child(2) {
+    background-color: #9E9E9E; /* Gris para restar puntos */
+}
+
+
+/* --- Controles de Juego (Iniciar/Finalizar) --- */
+.juego-controles {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.juego-controles button {
+    flex: 1;
+    padding: 15px 10px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.btn-start { background-color: #4CAF50; } /* Verde */
+.btn-pause { background-color: #FF9800; } /* Naranja */
+.btn-next { background-color: #1976D2; } /* Azul */
+.btn-finalizar { background-color: #D32F2F; } /* Rojo */

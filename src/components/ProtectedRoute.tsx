@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext'; // Importamos el hook que nos 
 interface ProtectedRouteProps {
   children: ReactNode;
   // El rol requerido para acceder a esta ruta (por defecto, solo el administrador)
-  requiredRole?: 'administrador' | 'jugador'; 
+  requiredRole?: 'administrador' | 'jugador' | 'árbitro' ; 
 }
 
 /**

@@ -1,6 +1,33 @@
-// src/types/index.ts
+// Tipo que define todos los roles posibles en el sistema
+export type Rol = 'administrador' | 'jugador' | 'árbitro'; 
 
-// src/types/index.ts
+export interface ClasificacionTeam {
+    posicion: number;
+    nombreEquipo: string;
+    pj: number; // Partidos Jugados
+    pg: number; // Partidos Ganados
+    pe: number; // Partidos Empatados
+    pp: number; // Partidos Perdidos
+    gf: number; // Goles/Puntos a Favor
+    gc: number; // Goles/Puntos en Contra
+    puntos: number;
+}
+
+// Interfaz para la información que el administrador gestionará sobre los árbitros
+export interface Arbitro {
+  id: number;
+  nombreCompleto: string;
+  email: string;
+  rol: 'árbitro'; 
+  // Otros datos necesarios para la gestión
+}
+
+// Props para el formulario de adición/edición de árbitros
+export interface FormularioArbitroProps {
+    arbitroAEditar: Arbitro | null;
+    onClose: () => void;
+    onSuccess: () => void;
+}
 
 // Tipos para la Categoría y Prioridad del Aviso
 export type CategoriaAviso = 'GENERAL' | 'TORNEO' | 'INSCRIPCIÓN';
@@ -92,6 +119,9 @@ export interface Equipo {
   // Añadir la lista de jugadores (por ahora, solo un array de strings)
   jugadores: string[];
   deporte: string; 
+  minJugadores?: number; // Opcional, para mostrar en el dashboard
+  maxJugadores?: number; // Opcional, para mostrar en el dashboard
+  reglas?: string;       // Opcional, para mostrar en el dashboard
 }
 
 // Props para la Tarjeta de Equipo
@@ -125,8 +155,6 @@ export interface FiltroDeporteProps {
   valorActual: string; 
 }
 
-// src/types/index.ts (Añadir o actualizar)
-
 // Datos que el capitán registra para cada integrante
 export interface JugadorInscripcion {
   nombre: string;
@@ -153,4 +181,23 @@ export interface FormularioInscripcionProps {
   maxJugadores: number; // Máximo permitido para la validación
   onClose: () => void;
   onSuccess: () => void;
+}
+
+// Interfaz para la información estadística de un equipo en la tabla
+export interface EquipoEstadistica {
+  idEquipo: number;
+  nombreEquipo: string;
+  partidosJugados: number;
+  victorias: number;
+  derrotas: number;
+  empates: number;
+  golesFavor: number;
+  golesContra: number;
+  puntos: number;
+}
+
+// Props para el componente de la tabla
+export interface TablaClasificacionProps {
+  deporte: string; // Para filtrar y mostrar la tabla correcta
+  idTorneo: number; // El torneo cuya tabla se está mostrando
 }

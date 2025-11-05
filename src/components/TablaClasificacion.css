@@ -1,0 +1,60 @@
+/* src/components/TablaClasificacion.css */
+
+.tabla-clasificacion-contenedor {
+    margin: 30px 0;
+}
+
+.tabla-clasificacion-contenedor h3 {
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina el doble borde */
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+    background-color: #1976D2; /* Azul principal */
+    color: white;
+}
+
+th {
+    padding: 12px 10px;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #EEE;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+tbody tr:hover {
+    background-color: #F5F5F5;
+}
+
+/* Columna especial para el nombre (alineación y espacio) */
+.equipo-nombre-col {
+    font-weight: 500;
+    width: 30%;
+}
+
+/* Columna especial para los puntos */
+.puntos-col {
+    font-weight: bold;
+    color: #1976D2;
+    background-color: #E3F2FD;
+}
+
+/* Estilo para los 3 primeros equipos (puestos de honor) */
+.top-team {
+    font-weight: bold;
+    background-color: #FFFDE7; /* Fondo sutil amarillo */
+}

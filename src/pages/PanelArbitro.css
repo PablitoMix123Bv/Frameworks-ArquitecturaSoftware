@@ -1,0 +1,58 @@
+/* src/pages/PanelArbitro.css */
+
+.arbitro-dashboard {
+    padding: 30px;
+}
+
+.arbitro-dashboard h1 {
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 2rem;
+}
+
+.sub-header {
+    color: #666;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 10px;
+}
+
+.partidos-asignados-list {
+    margin-top: 20px;
+}
+
+.card-partido-arbitro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 15px 25px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.partido-info-resumen h4 {
+    color: #1976D2;
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.card-partido-arbitro button {
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+/* Indicadores de Estado */
+.estado-por-iniciar {
+    border-left: 5px solid #FFC107; /* Amarillo */
+}
+
+.estado-en-proceso {
+    border-left: 5px solid #4CAF50; /* Verde */
+}
+
+.estado-finalizado {
+    border-left: 5px solid #555; /* Gris oscuro */
+}

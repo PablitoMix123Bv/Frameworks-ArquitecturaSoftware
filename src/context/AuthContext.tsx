@@ -2,13 +2,14 @@
 
 import React, { createContext, useState, useContext} from 'react';
 import type { ReactNode } from 'react';
+export type Rol = 'administrador' | 'jugador' | 'árbitro';
 
 // 1. Interfaz para el objeto Usuario (lo que guardaremos)
 interface AuthUser {
   id: number;
   email: string;
-  // Rol define el nivel de acceso (administrador o estudiante)
-  rol: 'administrador' | 'estudiante'; 
+  // Rol define el nivel de acceso (administrador o jugador)
+  rol: Rol;
 }
 
 // 2. Interfaz para el Contexto (lo que se comparte)
@@ -16,7 +17,7 @@ interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null; // El usuario puede ser un objeto o null
   isLoggedIn: boolean;
-  login: (email: string, rol: 'administrador' | 'estudiante') => void;
+  login: (email: string, rol: Rol) => void;
   logout: () => void;
 }
 
@@ -42,10 +43,12 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   
   // Estado que mantiene la información del usuario en toda la app
+  // const [user, setUser] = useState<AuthUser | null>(null);
+  // Define el estado inicial de usuario (user, setUser)
   const [user, setUser] = useState<AuthUser | null>(null);
   
   // Función para simular el inicio de sesión
-  const login = (email: string, rol: 'administrador' | 'estudiante') => {
+  const login = (email: string, rol: 'administrador' | 'jugador' | 'árbitro') => {
     // En una app real, aquí se guardaría el token JWT y se validarían los permisos
     const newUser: AuthUser = { id: 1, email, rol };
     setUser(newUser);
