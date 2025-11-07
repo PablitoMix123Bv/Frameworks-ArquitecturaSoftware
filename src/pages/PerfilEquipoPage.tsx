@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import HeaderNav from '../components/HeaderNav';
 import type { Equipo } from '../types';
 import './PerfilEquipoPage.css';
-
+import Footer from '../components/Footer';
 // Mock de datos para simular la obtención de UN equipo específico
 const mockEquipoDetalle: Equipo = {
   id: 1,
@@ -62,8 +62,8 @@ const PerfilEquipoPage: React.FC = () => {
             ))}
           </ul>
         </div>
-        
       </div>
+      <Footer />
     </div>
   );
 };

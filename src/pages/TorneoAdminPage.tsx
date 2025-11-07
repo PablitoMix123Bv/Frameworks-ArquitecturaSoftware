@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import type { Torneo, ProgramarPartidoData } from '../types'; 
-
+import HeaderNav from '../components/HeaderNav';
+import Footer from '../components/Footer';
+import '../main.css'; // Para usar .content-container
+import './TorneoAdminPage.css';
 // Las rutas son relativas a la posición de este archivo
 import CardTorneoAdmin from '../components/CardTorneoAdmin'; 
 import FormularioTorneo from '../components/FormularioTorneo'; 
@@ -48,37 +51,46 @@ const TorneoAdminPage: React.FC = () => {
   };
   
 return (
-    <div className="admin-container">
-      {/* Botón "Generar torneo" */}
-      <button 
-        className="btn-generar btn-primary" 
-        onClick={() => handleOpenModal()} 
-      >
-        Generar torneo +
-      </button>
+    // --- 2. ENVUELVE TODO EN EL LAYOUT ---
+    <div>
+      <HeaderNav />
+      <div className="content-container"> {/* <--- USA EL CONTENEDOR */}
+        
+        {/* (Tu código JSX existente va aquí dentro) */}
+        <div className="admin-container">
+     
+          <button 
+            className="btn-generar btn-primary" 
+            onClick={() => handleOpenModal()} 
+          >
+            Generar torneo +
+          </button>
 
-      {/* Botón "Programar Jornada" (CORREGIDO) */}
-      <button 
-        className="btn-programar-jornada btn-primary" 
-        onClick={() => handleOpenJornadaModal()} // <-- ¡Aquí está la función!
-        style={{ marginLeft: '10px' }}
-      >
-        Programar Partido
-      </button>
-      
-      <h2>Torneos existentes</h2>
-      
-      {/* Renderizado de la lista de Torneos */}
-      <div className="torneos-list-grid"> 
-          {torneos.map(torneo => (
-            <CardTorneoAdmin
-                key={torneo.id}
-                torneo={torneo}
-                onEdit={() => handleOpenModal(torneo)}
-                onDelete={() => handleDelete(torneo.id)}
-            />
-          ))}
-      </div>
+          <button 
+            className="btn-programar-jornada btn-primary" 
+            onClick={() => handleOpenJornadaModal()}
+            style={{ marginLeft: '10px' }}
+          >
+            Programar Partido +
+          </button>
+          
+          <h2>Torneos existentes</h2>
+          
+          <div className="torneos-list-grid"> 
+              {torneos.map(torneo => (
+                <CardTorneoAdmin
+                    key={torneo.id}
+                    torneo={torneo}
+                    onEdit={() => handleOpenModal(torneo)}
+                    onDelete={() => handleDelete(torneo.id)}
+                />
+              ))}
+          </div>
+        </div>
+
+      </div> {/* <--- CIERRA EL CONTENEDOR */}
+      
+      <Footer />
       
       {/* Modal de CREACIÓN/EDICIÓN de Torneos (Existente) */}
       {isModalOpen && (

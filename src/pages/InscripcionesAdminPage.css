@@ -1,0 +1,61 @@
+/* src/pages/InscripcionesAdminPage.css */
+.solicitudes-list {
+    margin-top: 20px;
+}
+
+.card-solicitud-admin {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: white;
+}
+
+.solicitud-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+}
+
+.solicitud-details {
+    flex: 1;
+}
+
+.solicitud-details h4 {
+    margin: 0 0 5px 0;
+    color: #1976D2;
+}
+.solicitud-details p, .solicitud-details small {
+    margin: 0;
+    color: #555;
+}
+
+.solicitud-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botones con colores base de la app */
+.btn-aprobar {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-rechazar {
+    background-color: #D32F2F; /* Rojo */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}

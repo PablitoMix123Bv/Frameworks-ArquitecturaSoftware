@@ -33,6 +33,7 @@ const HeaderNav: React.FC = () => {
                     <NavLink to="/admin/torneos" className={({ isActive }) => isActive ? "nav-tab admin active" : "nav-tab admin"}>Gestión Torneos</NavLink>
                     <NavLink to="/admin/avisos" className={({ isActive }) => isActive ? "nav-tab admin active" : "nav-tab admin"}>Gestión Avisos</NavLink>
                     <NavLink to="/admin/arbitros" className={({ isActive }) => isActive ? "nav-tab admin active" : "nav-tab admin"}>Gestión Árbitros</NavLink>
+                    <NavLink to="/admin/inscripciones" className={({ isActive }) => isActive ? "nav-tab admin active" : "nav-tab admin"}>Gestión Inscripciones</NavLink>
                 </>
             )}
 

@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext'; // Para verificar si es estudi
 import type { Torneo } from '../types'; 
 import { useNavigate } from 'react-router-dom';
 import './InscripcionesPage.css';
-
+import Footer from '../components/Footer';
 // Datos mock de torneos disponibles para inscripción
 const mockTorneosDisponibles: Torneo[] = [
     { id: 101, nombre: 'Fútbol Apertura 2026', deporte: 'FÚTBOL', lugar: 'Canchas FIF', minJugadores: 8, maxJugadores: 12, fechaInicio: '2026-03-01', fechaFin: '2026-05-30', fechaLimiteInscripcion: '2026-02-15', descripcion: 'Torneo regular de la facultad.', detalles: 'Abierto a todos.', reglas: 'Reglas FIFA.' },
@@ -26,7 +26,7 @@ const InscripcionesPage: React.FC = () => {
     const [torneoSeleccionado, setTorneoSeleccionado] = useState<Torneo | null>(null);
 
     // Determina si el usuario es un estudiante/capitán y puede inscribir
-    const puedeInscribir = isLoggedIn && user?.rol === 'estudiante'; 
+    const puedeInscribir = isLoggedIn && user?.rol === 'jugador'; 
 
     const handleInscribirClick = (torneo: Torneo) => {
         if (!puedeInscribir) {
@@ -73,7 +73,7 @@ const InscripcionesPage: React.FC = () => {
                 ))}
                 
             </div>
-
+            <Footer />
             {/* Modal de Inscripción */}
             {modalAbierto && torneoSeleccionado && (
                 <FormularioInscripcion

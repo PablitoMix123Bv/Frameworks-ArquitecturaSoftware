@@ -5,7 +5,7 @@ import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioArbitro from '../components/FormularioArbitro'; 
 import type { Arbitro } from '../types'; 
-
+import './ArbitroAdminPage.css';
 // Datos mock
 const mockArbitros: Arbitro[] = [
     { id: 1, nombreCompleto: 'Laura González', email: 'laura.g@uaq.mx', rol: 'árbitro' },

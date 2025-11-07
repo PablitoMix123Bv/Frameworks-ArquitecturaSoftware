@@ -1,5 +1,5 @@
 // src/App.tsx
-import React from 'react';
+// import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Componentes de la aplicación (asumimos que todos están importados)
@@ -17,7 +17,9 @@ import PerfilEquipoPage from './pages/PerfilEquipoPage';
 import PanelArbitro from './pages/PanelArbitro.tsx';
 import FormularioRegistroMarcador from './components/FormularioRegistroMarcador.tsx'; // Importamos el componente
 import ArbitroAdminPage from './pages/ArbitroAdminPage.tsx'; // Asumimos esta importación
-
+import MiEquipoDashboard from './pages/MiEquipoDashboard.tsx';
+import ControlPartidoPage from './pages/ControlPartidoPage.tsx'; // Importamos la página de control de partido
+import InscripcionesAdminPage from './pages/InscripcionesAdminPage.tsx';
 function App() {
   return (
     <Router>
@@ -38,7 +40,11 @@ function App() {
 
         {/* -------------------- Rutas de Acceso Restringido -------------------- */}
         <Route path="/login" element={<Login />} /> 
-        
+        <Route 
+          path="/perfil/mi-equipo" 
+          element={<ProtectedRoute requiredRole="jugador"><MiEquipoDashboard /></ProtectedRoute>} 
+        />
+
         {/* ADMIN: Torneos (Dashboard Principal) */}
         <Route 
           path="/admin/torneos" 
@@ -54,7 +60,10 @@ function App() {
           path="/admin/arbitros" 
           element={<ProtectedRoute requiredRole="administrador"><ArbitroAdminPage /></ProtectedRoute>} 
         />
-
+        <Route 
+          path="/admin/inscripciones" 
+          element={<ProtectedRoute requiredRole="administrador"><InscripcionesAdminPage /></ProtectedRoute>} 
+        />
         {/* ÁRBITRO: Dashboard */}
         <Route 
           path="/arbitro/dashboard" 
@@ -65,8 +74,8 @@ function App() {
         <Route 
           path="/arbitro/juego/:idPartido" 
           element={<ProtectedRoute requiredRole="árbitro">
-              {/* NOTA: En la práctica, necesitarías cargar el objeto 'partido' real con el hook useParams */}
-              <FormularioRegistroMarcador /* ... props de partido aquí ... */ />
+              {/* Ahora renderiza la PÁGINA que sabe cómo buscar los datos */}
+              <ControlPartidoPage />
             </ProtectedRoute>} 
         />
         

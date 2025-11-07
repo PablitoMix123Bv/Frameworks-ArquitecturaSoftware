@@ -1,8 +1,10 @@
 // src/components/CardTorneoAdmin.tsx
-
 import React from 'react';
 import type { CardTorneoAdminProps } from '../types'; // Importamos el tipo
 import { useAuth } from '../context/AuthContext';//Importa el hook de autenticación
+import './CardTorneoAdmin.css'; // Importar estilos específicos para la tarjeta
+import { FaTrash, FaPencilAlt } from 'react-icons/fa'; // Importa los iconos
+
 // Asignamos el tipo a las props (React.FC = Function Component)
 const CardTorneoAdmin: React.FC<CardTorneoAdminProps> = ({ torneo, onEdit, onDelete }) => {
   const { user } = useAuth();
@@ -25,14 +27,14 @@ const CardTorneoAdmin: React.FC<CardTorneoAdminProps> = ({ torneo, onEdit, onDel
       {user?.rol === 'administrador' && (
         <div className="torneo-admin-actions">
           {/* Botón de Eliminar */}
-          <button className="btn-icon delete" onClick={onDelete}>
-            🗑️
-          </button>
-          
-          {/* Botón de Editar */}
-          <button className="btn-icon edit" onClick={onEdit}>
-            ✏️
-          </button>
+            <button className="btn-icon delete" onClick={onDelete}>
+              <FaTrash /> {/* <-- Usas el componente de icono */}
+            </button>
+
+            {/* Botón de Editar */}
+            <button className="btn-icon edit" onClick={onEdit}>
+              <FaPencilAlt /> {/* <-- Usas el componente de icono */}
+            </button>
         </div>
       )}
     </div>

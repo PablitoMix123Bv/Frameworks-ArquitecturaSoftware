@@ -4,7 +4,7 @@ import type { Partido } from '../types';
 import CardPartido from '../components/CardPartido';
 import HeaderNav from '../components/HeaderNav'; 
 import Footer from '../components/Footer'; // Eliminado si no existe
-
+import FiltroDeporte from '../components/FiltroDeporte';
 // --- Datos Mock (Simulación) ---
 const mockPartidos: Partido[] = [
   {
@@ -14,6 +14,7 @@ const mockPartidos: Partido[] = [
     estado: 'EN PROCESO',
     marcadorLocal: 0,
     marcadorVisitante: 0,
+    Deporte: 'FUTBOL',
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const mockPartidos: Partido[] = [
     estado: 'FINALIZADO',
     marcadorLocal: 3,
     marcadorVisitante: 2,
+    Deporte: 'FUTBOL',
   },
   {
     id: 3,
@@ -30,6 +32,7 @@ const mockPartidos: Partido[] = [
     estado: 'POR INICIAR',
     marcadorLocal: null,
     marcadorVisitante: null,
+    Deporte: 'FUTBOL',
   },
 ];
 
@@ -37,6 +40,7 @@ const PartidosPage: React.FC = () => {
   
   const [partidos, setPartidos] = useState<Partido[]>([]); 
   const [isLoading, setIsLoading] = useState(true); 
+  const [deporteSeleccionado, setDeporteSeleccionado] = useState('TODOS');
 
   useEffect(() => {
     // Simulación de la carga de la API
@@ -52,7 +56,10 @@ const PartidosPage: React.FC = () => {
       <HeaderNav /> 
       <div className="content-container">
         
-        <div className="filter-bar">Filtrar por torneos ▶</div>
+        <FiltroDeporte 
+            onFiltroChange={setDeporteSeleccionado}
+            valorActual={deporteSeleccionado}
+        />
         
         <h2>Listado de Partidos</h2>
         

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { FormularioArbitroProps } from '../types'; 
+import "./FormularioArbitro.css"
 // Reutilizamos estilos de modal
 
 const FormularioArbitro: React.FC<FormularioArbitroProps> = ({ arbitroAEditar, onClose, onSuccess }) => {

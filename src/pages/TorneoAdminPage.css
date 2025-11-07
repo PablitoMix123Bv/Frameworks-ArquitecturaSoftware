@@ -1,0 +1,29 @@
+/* src/pages/TorneoAdminPage.css */
+
+.admin-page-header {
+    display: flex;
+    justify-content: center; /* Alinea los botones al inicio */
+    gap: 15px; /* Espacio entre botones */
+    margin-bottom: 25px;
+    border-bottom: 2px solid #EEE;
+    padding-bottom: 20px;
+}
+
+.admin-page-header .btn-primary {
+    font-size: 1rem;
+    padding: 12px 20px;
+}
+
+.torneos-list-grid {
+    display: grid;
+    /* Dos columnas para las tarjetas de admin */
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Adaptación para pantallas más pequeñas (como la de tu captura) */
+@media (max-width: 900px) {
+    .torneos-list-grid {
+        grid-template-columns: 1fr; /* Una sola columna */
+    }
+}

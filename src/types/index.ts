@@ -98,6 +98,7 @@ export interface Partido {
   estado: 'POR INICIAR' | 'EN PROCESO' |'CANCELADO' |'FINALIZADO';
   marcadorLocal: number | null; // Será null si aún no termina
   marcadorVisitante: number | null; // Será null si aún no termina
+  Deporte: string; // Deporte al que pertenece el partido
 }
 
 export interface CardPartidoProps { 

@@ -1,0 +1,67 @@
+/* src/pages/AvisosAdminPage.css */
+
+.admin-avisos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #EEE;
+    padding-bottom: 15px;
+}
+
+.admin-avisos-header h2 {
+    margin: 0;
+}
+
+.card-aviso-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    transition: box-shadow 0.2s;
+}
+
+.card-aviso-admin:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.aviso-details {
+    flex: 1;
+}
+
+.aviso-details h4 {
+    margin: 0 0 5px 0;
+    color: #1976D2; /* Color principal de la app */
+    font-size: 1.1rem;
+}
+
+.aviso-details p {
+    margin: 0 0 5px 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.aviso-details small {
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.aviso-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Los estilos de .btn-icon ya están en main.css */
+/* Pero añadimos los hovers de color específicos */
+.btn-icon.edit:hover {
+    color: #1976D2; /* Azul */
+}
+
+.btn-icon.delete:hover {
+    color: #D32F2F; /* Rojo */
+}

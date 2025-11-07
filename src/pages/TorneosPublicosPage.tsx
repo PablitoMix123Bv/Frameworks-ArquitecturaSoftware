@@ -5,7 +5,7 @@ import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FiltroDeporte from '../components/FiltroDeporte'; 
 import type { Torneo } from '../types'; 
-
+import './TorneosPublicosPage.css';
 // Componente para una tarjeta de torneo pública (debe ser creado)
 // import CardTorneoPublico from '../components/CardTorneoPublico'; 
 

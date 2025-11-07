@@ -27,12 +27,12 @@ const TablaClasificacion: React.FC<TablaClasificacionProps> = ({ deporte, idTorn
                     <tr>
                         <th>#</th>
                         <th>Equipo</th>
-                        <th>PJ</th>
-                        <th>G</th>
-                        <th>E</th>
-                        <th>P</th>
-                        <th>GF</th>
-                        <th>GC</th>
+                        <th>Jugados</th>
+                        <th>Ganados</th>
+                        <th>Empatados</th>
+                        <th>Perdidos</th>
+                        <th>Favor</th> 
+                        <th>Contra</th> 
                         <th>Pts</th>
                     </tr>
                 </thead>

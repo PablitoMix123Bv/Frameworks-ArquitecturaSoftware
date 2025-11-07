@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { FormularioAvisoProps, CategoriaAviso, PrioridadAviso } from '../types'; 
+import './FormularioAviso.css';
 // Asumimos que los estilos de modal están disponibles
 
 const mockTorneos = [{ id: 101, nombre: 'Fútbol Apertura' }, { id: 102, nombre: 'Baloncesto Relámpago' }];

@@ -5,7 +5,7 @@ import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioAviso from '../components/FormularioAviso';
 import type { Aviso } from '../types'; 
-
+import './AvisosAdminPage.css';
 // Datos mock (reutiliza los de la vista pública)
 const mockAvisos: Aviso[] = [
     { id: 1, titulo: 'Inscripciones Abiertas', contenido: 'Recuerden que el límite es el 15 de febrero.', fechaPublicacion: '2025-10-25', autor: 'Coordinador A', categoria: 'INSCRIPCIÓN', prioridad: 'URGENTE', idTorneoAsociado: 101 },

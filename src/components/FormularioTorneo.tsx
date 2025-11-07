@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { FormularioTorneoProps, Torneo } from '../types'; 
+import './FormularioTorneo.css';
 
 // Función auxiliar para inicializar el estado del formulario (AÑADIR NUEVOS CAMPOS)
 const initializeFormState = (torneo: Torneo | null) => ({

@@ -5,6 +5,7 @@ import HeaderNav from '../components/HeaderNav';
 import CardEquipo from '../components/CardEquipo';
 import FiltroDeporte from '../components/FiltroDeporte'; // Importar el filtro
 import type { Equipo } from '../types';
+import Footer from '../components/Footer';
 // ... (Importar estilos si los tienes) ...
 
 // Datos mock para simular la lista de equipos (añadir el deporte para filtrar)
@@ -54,6 +55,7 @@ const PublicHomePage: React.FC = () => {
         </div>
         
       </div>
+      <Footer />
     </div>
   );
 };
