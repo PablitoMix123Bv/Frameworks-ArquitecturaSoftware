@@ -1,69 +1,58 @@
-# React + TypeScript + Vite
+# SportFlow FIF 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+##  Descripción
 
-Currently, two official plugins are available:
+**SportFlow FIF** es una plataforma web integral para la administración y gestión de torneos deportivos internos dentro de una facultad. La aplicación permite a los administradores crear y gestionar torneos, a los jugadores inscribir sus equipos, y a los árbitros controlar los partidos en tiempo real.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+##  Características Principales
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Este proyecto está construido con un sistema de roles para manejar las diferentes necesidades de los usuarios:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+###  Rol de Administrador
+* **Gestión de Torneos:** Crear, editar y eliminar torneos (Fútbol, Baloncesto, etc.).
+* **Gestión de Jornadas:** Programar partidos y enfrentamientos entre equipos.
+* **Gestión de Inscripciones:** Aprobar, rechazar o solicitar cambios en las solicitudes de equipos.
+* **Gestión de Árbitros:** Dar de alta o de baja a los árbitros en el sistema.
+* **Gestión de Avisos:** Publicar comunicados oficiales para todos los usuarios.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+###  Rol de Árbitro
+* **Panel de Control:** Ver una lista de partidos asignados (pendientes, en proceso, finalizados).
+* **Control de Juego:** Llevar el marcador y el tiempo/periodo del partido en tiempo real. La interfaz se adapta dinámicamente al deporte (Tiempos para Fútbol, Cuartos para Baloncesto).
+* **Ver Reporte:** Consultar el resultado final de un partido ya arbitrado.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+###  Rol de Jugador (Capitán)
+* **Dashboard "Mi Equipo":** Ver todos los equipos en los que está inscrito y su estado (Aprobado, Pendiente, Requiere Cambios).
+* **Gestión de Roster:** Añadir o eliminar jugadores de su equipo a través de un modal.
+* **Inscripción:** Inscribir a su equipo en torneos abiertos.
+* **Corregir Solicitud:** Editar y reenviar una solicitud si un administrador la marcó con "Requiere Cambios".
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+###  Vista Pública (Sin Iniciar Sesión)
+* **Ver Torneos:** Explorar los torneos disponibles.
+* **Ver Resultados:** Consultar la tabla de clasificación.
+* **Ver Partidos:** Ver la lista de próximos partidos y resultados.
+* **Ver Equipos:** Explorar los perfiles de los equipos inscritos.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+##  Stack de Tecnologías
+
+* **Frontend:** React 19
+* **Lenguaje:** TypeScript
+* **Bundler:** Vite
+* **Routing:** React Router DOM
+* **Gestión de Estado:** React Context (para Autenticación)
+* **Iconos:** React Icons
+
+---
+
+##  Cómo ejecutar el proyecto
+
+Este proyecto fue inicializado con Vite.
+npm run dev
+
+### 1. Instalación
+En la carpeta raíz, instala las dependencias:
+```bash
+npm install
