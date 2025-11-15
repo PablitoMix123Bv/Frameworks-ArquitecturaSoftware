@@ -1,0 +1,70 @@
+/* src/components/Bracket.css (PARA LA NUEVA LIBRERÍA) */
+
+.bracket-container {
+    margin-top: 40px;
+    background-color: white; /* Fondo blanco */
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow-x: auto; /* Permite scroll horizontal si el bracket es muy grande */
+}
+
+.bracket-container h3 {
+    text-align: center;
+    color: #1976D2;
+    margin-bottom: 30px;
+}
+
+/* La librería @g-loot usa "divs" para el espaciado de rondas.
+ Le damos un ancho mínimo a cada ronda para que el bracket respire.
+*/
+div[style*="--round-width"] {
+    min-width: 250px;
+}
+
+/* Estilos para nuestro componente CustomMatch 
+*/
+.custom-match-box {
+    display: flex;
+    flex-direction: column;
+    background-color: #F8F8F8; /* Fondo gris claro de la caja */
+    border: 1px solid #CCC;
+    border-radius: 6px;
+    width: 220px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.custom-match-box .team {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.custom-match-box .team:first-child {
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.team-name {
+    font-weight: 500;
+}
+
+.team-score {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Estilo para el ganador */
+.custom-match-box .team.winner {
+    color: #115293; /* Azul oscuro */
+    font-weight: bold;
+}
+.custom-match-box .team.winner .team-score {
+    color: #4CAF50; /* Verde */
+}
+
+/* Estilo para el perdedor (opcional) */
+.custom-match-box .team:not(.winner) {
+    color: #888;
+}

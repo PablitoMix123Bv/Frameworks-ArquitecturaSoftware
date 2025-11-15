@@ -1,98 +1,133 @@
-/* src/components/FormularioInscripcion.css */
+/* src/components/FormularioInscripcion.css (CORREGIDO) */
 
-/* Reutilizar modal-overlay */
+/* (Estilos de .modal-overlay, .modal-content-inscripcion, .modal-close-button se quedan igual) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
 
 .modal-content-inscripcion {
     background-color: white;
     padding: 30px;
     border-radius: 10px;
     width: 90%;
-    max-width: 800px; /* Hacemos el modal más ancho para el formulario de jugadores */
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    color: #333;
-    max-height: 90vh; /* Máxima altura */
-    overflow-y: auto; /* Permite scroll si el contenido es muy largo */
+}
+
+.modal-close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
 }
 
 .modal-content-inscripcion h2 {
+    margin-top: 0;
+    margin-bottom: 5px;
     color: #1976D2;
+}
+.modal-content-inscripcion h4 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #555;
+    font-weight: normal;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 15px;
+}
+
+/* (Estilos de .form-group, input, textarea, etc. se quedan igual) */
+.form-group {
     margin-bottom: 20px;
 }
-
-.error-message {
-    color: #D32F2F;
-    background-color: #FFCDD2;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    font-weight: bold;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
 }
-
-section h3 {
-    margin-top: 25px;
-    margin-bottom: 15px;
-    color: #555;
-    border-bottom: 1px dashed #DDD;
-    padding-bottom: 5px;
-}
-
-/* --- Estilo de la Tarjeta de Jugador --- */
-.jugador-card {
-    border: 1px solid #E0E0E0;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    position: relative;
-}
-
-.jugador-card.capitan {
-    border-left: 5px solid #FFC107; /* Borde amarillo para resaltar al capitán */
-    background-color: #FFFDE7;
-}
-
-.rol-label {
-    position: absolute;
-    top: -10px;
-    right: 10px;
-    background-color: #1976D2;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-/* Estilos de inputs */
-.jugador-card input, .jugador-card select {
-    flex: 1;
-    margin-right: 10px;
-    padding: 8px;
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
     border: 1px solid #CCC;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 1rem;
     box-sizing: border-box;
 }
+.form-group textarea {
+    resize: vertical;
+}
+.form-group small {
+    margin-top: 5px;
+    display: block;
+    color: #777;
+}
 
-.btn-add {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+/* --- 1. NUEVOS ESTILOS PARA EL CARGADOR DE LOGO --- */
+.form-group-logo {
+    margin-bottom: 20px;
+}
+.form-group-logo label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.logo-uploader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    background-color: #F8F8F8;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+}
+
+.logo-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%; /* Vista previa circular */
+    border: 2px solid #CCC;
+    background-color: #FFF;
+}
+
+.input-file-hidden {
+    display: none; /* Oculta el input de archivo real */
+}
+
+/* Estilo del "botón" (que es un label) */
+.btn-file-upload {
+    background-color: #E0E0E0;
+    color: #333;
     padding: 10px 15px;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+.btn-file-upload:hover {
+    background-color: #d1d1d1;
 }
 
-.btn-remove {
-    background-color: #D32F2F;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.submit-btn {
+/* (Estilo del botón principal se queda igual) */
+.modal-content-inscripcion .btn-primary {
     width: 100%;
-    margin-top: 30px;
 }

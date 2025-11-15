@@ -1,4 +1,4 @@
-/* src/pages/InscripcionesAdminPage.css */
+/* src/pages/InscripcionesAdminPage.css (CORREGIDO) */
 .solicitudes-list {
     margin-top: 20px;
 }
@@ -40,22 +40,62 @@
     gap: 10px;
 }
 
-/* Botones con colores base de la app */
+/* --- ESTILOS DE BOTONES MEJORADOS --- */
+
+/* Estilos base para los botones de acción */
+.btn-aprobar, .btn-solicitar-cambios, .btn-rechazar-definitivo {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre icono y texto */
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
 .btn-aprobar {
     background-color: #4CAF50; /* Verde */
     color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
 }
-.btn-rechazar {
-    background-color: #D32F2F; /* Rojo */
+.btn-aprobar:hover {
+    background-color: #388E3C;
+}
+
+.btn-solicitar-cambios {
+    background-color: #FFC107; /* Amarillo/Naranja para "Revisión" */
+    color: #333;
+}
+.btn-solicitar-cambios:hover {
+    background-color: #FFA000;
+}
+
+.btn-rechazar-definitivo {
+    background-color: #F44336; /* Rojo para "Rechazo definitivo" */
     color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
 }
+.btn-rechazar-definitivo:hover {
+    background-color: #D32F2F;
+}
+
+/* --- ESTILOS PARA EL MODAL DE RETROALIMENTACIÓN --- */
+/* (Reutiliza clases de Modal.css y FormularioRoster.css) */
+.modal-content-roster {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px; 
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #333;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.modal-content-roster h2 { margin-top: 0; margin-bottom: 5px; color: #1976D2; }
+.modal-content-roster h3 { margin: 0 0 20px 0; color: #555; font-weight: normal; border-bottom: 1px solid #EEE; padding-bottom: 15px; }
+.modal-content-roster .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+.modal-content-roster .form-group textarea { width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 4px; font-size: 1rem; box-sizing: border-box; resize: vertical; }
+.modal-content-roster .btn-primary { width: 100%; }

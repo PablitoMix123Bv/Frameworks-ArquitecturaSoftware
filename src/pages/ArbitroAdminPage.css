@@ -1,20 +1,40 @@
-/* src/pages/ArbitroAdminPage.css */
+/* src/pages/ArbitroAdminPage.css (CON BOTONES REDONDEADOS) */
 
-/* Reutilizamos el estilo del header de la otra página admin */
-.admin-avisos-header {
+/* 1. ESTILO DE ENCABEZADO UNIFICADO */
+.admin-page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px; 
     margin-bottom: 25px;
     border-bottom: 2px solid #EEE;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 }
 
-.admin-avisos-header h2 {
+.admin-page-header h2 {
     margin: 0;
+    font-size: 1.5rem;
+    color: #333;
 }
 
-/* Estilo para la tarjeta de árbitro */
+.admin-header-actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0; 
+}
+
+/* --- ESTA ES LA CORRECCIÓN --- */
+.admin-header-actions .btn-primary {
+    font-size: 0.95rem;
+    font-weight: bold;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 20px; /* <-- BOTONES REDONDEADOS */
+}
+
+/* 2. ESTILOS PROPIOS DE LA LISTA DE ÁRBITROS */
 .card-arbitro {
     display: flex;
     justify-content: space-between;
@@ -32,31 +52,24 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-.arbitro-details {
-    flex: 1;
-}
+.arbitro-details { flex: 1; padding-right: 15px; }
+.arbitro-details h4 { margin: 0 0 5px 0; color: #1976D2; font-size: 1.1rem; }
+.arbitro-details p { margin: 0; color: #555; font-size: 0.95rem; }
+.arbitro-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-icon.edit:hover { color: #1976D2; }
+.btn-icon.delete:hover { color: #D32F2F; }
 
-.arbitro-details h4 {
-    margin: 0 0 5px 0;
-    color: #1976D2; /* Color principal */
-    font-size: 1.1rem;
-}
-
-.arbitro-details p {
-    margin: 0;
-    color: #555;
-    font-size: 0.95rem;
-}
-
-.arbitro-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-icon.edit:hover {
-    color: #1976D2; /* Azul */
-}
-
-.btn-icon.delete:hover {
-    color: #D32F2F; /* Rojo */
+/* Media query para móviles */
+@media (max-width: 900px) {
+    .admin-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .admin-header-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    .admin-header-actions .btn-primary {
+        justify-content: center;
+    }
 }

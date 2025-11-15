@@ -1,25 +1,66 @@
-// src/components/FormularioRegistroMarcador.tsx
+// src/components/FormularioRegistroMarcador.tsx (CORREGIDO)
 
 import React, { useState, useEffect, useRef } from 'react';
 import type { Partido } from '../types';
 import './FormularioRegistroMarcador.css'; 
+import { FaPlay, FaPause, FaFlagCheckered, FaArrowRight } from 'react-icons/fa'; // Importamos iconos
 
 interface MarcadorProps {
     partido: Partido;
     onFinalizar: (marcadorLocal: number, marcadorVisitante: number) => void;
-    // Función para simular el registro de tiempo/cuarto
-    onUpdate: (data: { marcadorLocal: number, marcadorVisitante: number, tiempo: string, cuarto: number }) => void;
+    onUpdate: (data: { marcadorLocal: number, marcadorVisitante: number, tiempo: string, periodo: string }) => void;
 }
 
+// --- LÓGICA DE CONTROL DE PERIODO (NUEVO) ---
+const getPeriodoConfig = (deporte: string) => {
+    switch (deporte.toUpperCase()) {
+        case 'FUTBOL':
+            return {
+                nombre: 'Tiempo',
+                total: 2,
+                botonSiguiente: 'Medio Tiempo',
+                botonFinal: 'Fin 2do Tiempo'
+            };
+        case 'BALONCESTO':
+            return {
+                nombre: 'Cuarto',
+                total: 4,
+                botonSiguiente: 'Siguiente Cuarto',
+                botonFinal: 'Fin 4to Cuarto'
+            };
+        case 'VOLEIBOL':
+        case 'BÉISBOL':
+            return {
+                nombre: 'Set / Entrada', // Simplificado
+                total: Infinity, // No hay límite fijo
+                botonSiguiente: 'Siguiente Set',
+                botonFinal: 'Finalizar'
+            };
+        default:
+            return {
+                nombre: 'Periodo',
+                total: 2,
+                botonSiguiente: 'Siguiente Periodo',
+                botonFinal: 'Finalizar'
+            };
+    }
+};
+
 const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinalizar, onUpdate }) => {
+    
+    // --- LÓGICA DE ESTADO (ACTUALIZADA) ---
     const [marcadorLocal, setMarcadorLocal] = useState(partido.marcadorLocal || 0);
     const [marcadorVisitante, setMarcadorVisitante] = useState(partido.marcadorVisitante || 0);
     const [isRunning, setIsRunning] = useState(partido.estado === 'EN PROCESO');
-    const [cuartoActual, setCuartoActual] = useState(1);
+    
+    // Configuración dinámica basada en el deporte
+    const configDeporte = getPeriodoConfig(partido.Deporte);
+    const [periodoActual, setPeriodoActual] = useState(1);
+    
     const [segundos, setSegundos] = useState(0); 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Lógica del Cronómetro (Se ejecuta cada segundo si isRunning es true)
+    // Lógica del Cronómetro (Se queda igual)
     useEffect(() => {
         if (isRunning) {
             timerRef.current = setInterval(() => {
@@ -28,7 +69,7 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
         } else if (timerRef.current) {
             clearInterval(timerRef.current);
         }
-        return () => { // Función de limpieza al desmontar
+        return () => { 
             if (timerRef.current) clearInterval(timerRef.current);
         };
     }, [isRunning]);
@@ -42,41 +83,63 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
     const handleScoreChange = (equipo: 'local' | 'visitante', delta: number) => {
         if (partido.estado === 'FINALIZADO') return;
         
+        let nuevoMarcadorLocal = marcadorLocal;
+        let nuevoMarcadorVisitante = marcadorVisitante;
+
         if (equipo === 'local') {
-            setMarcadorLocal(prev => Math.max(0, prev + delta));
+            nuevoMarcadorLocal = Math.max(0, marcadorLocal + delta);
+            setMarcadorLocal(nuevoMarcadorLocal);
         } else {
-            setMarcadorVisitante(prev => Math.max(0, prev + delta));
+            nuevoMarcadorVisitante = Math.max(0, marcadorVisitante + delta);
+            setMarcadorVisitante(nuevoMarcadorVisitante);
         }
-        // Simular el envío de actualización al backend
-        onUpdate({ marcadorLocal: marcadorLocal, marcadorVisitante: marcadorVisitante, tiempo: formatTime(segundos), cuarto: cuartoActual });
+        
+        onUpdate({ 
+            marcadorLocal: nuevoMarcadorLocal, 
+            marcadorVisitante: nuevoMarcadorVisitante, 
+            tiempo: formatTime(segundos), 
+            periodo: `${configDeporte.nombre} ${periodoActual}`
+        });
     };
 
-    const handleNextCuarto = () => {
-        if (cuartoActual < 4) { // Límite de 4 cuartos/tiempos
-            setCuartoActual(prev => prev + 1);
-            setSegundos(0); // Reiniciar tiempo para el nuevo cuarto
-            setIsRunning(false); // Pausar automáticamente al finalizar un cuarto
+    // --- LÓGICA DE PERIODO (ACTUALIZADA) ---
+    const handleNextPeriodo = () => {
+        if (periodoActual < configDeporte.total) { 
+            setPeriodoActual(prev => prev + 1);
+            setSegundos(0); // Reiniciar tiempo
+            setIsRunning(false); // Pausar automáticamente
+        } else if (configDeporte.total === Infinity) {
+            // Para Voleibol/Béisbol, solo incrementa
+            setPeriodoActual(prev => prev + 1);
+            setSegundos(0);
+            setIsRunning(false);
         }
+        // Si ya está en el último periodo (ej. 4/4), no hace nada
     };
+
+    const estaEnUltimoPeriodo = periodoActual === configDeporte.total;
 
     return (
         <div className="marcador-control-box">
             <h3>Control de Juego: {partido.equipoLocal.nombre} vs {partido.equipoVisitante.nombre}</h3>
             
-            {/* Visor de Marcador */}
+            {/* Visor de Marcador (Sin cambios) */}
             <div className="marcador-display">
                 <div className="score-equipo">{marcadorLocal}</div>
                 <div className="separator-marcador">-</div>
                 <div className="score-equipo">{marcadorVisitante}</div>
             </div>
 
-            {/* Visor de Tiempo y Cuarto */}
+            {/* --- Visor de Tiempo y Periodo (DINÁMICO) --- */}
             <div className="tiempo-control">
-                <span className="cuarto-display">CUARTO {cuartoActual}/4</span>
+                <span className="cuarto-display">
+                    {configDeporte.nombre.toUpperCase()} {periodoActual}
+                    {configDeporte.total !== Infinity && ` / ${configDeporte.total}`}
+                </span>
                 <span className="tiempo-display">{formatTime(segundos)}</span>
             </div>
 
-            {/* Controles de Puntaje */}
+            {/* Controles de Puntaje (Sin cambios) */}
             <div className="score-controles">
                 <div className="control-local">
                     <button onClick={() => handleScoreChange('local', 1)}>+1</button>
@@ -88,17 +151,24 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
                 </div>
             </div>
 
-            {/* Controles de Tiempo y Juego */}
+            {/* --- Controles de Juego (DINÁMICOS) --- */}
             <div className="juego-controles">
                 <button 
                     onClick={() => setIsRunning(!isRunning)}
                     className={isRunning ? 'btn-pause' : 'btn-start'}
                 >
+                    {isRunning ? <FaPause /> : <FaPlay />}
                     {isRunning ? 'PAUSAR' : 'INICIAR TIEMPO'}
                 </button>
                 
-                <button onClick={handleNextCuarto} disabled={isRunning} className="btn-next">
-                    Siguiente Cuarto ({cuartoActual < 4 ? cuartoActual + 1 : 'Fin'})
+                <button 
+                    onClick={handleNextPeriodo} 
+                    disabled={isRunning || estaEnUltimoPeriodo} // Deshabilitado si el tiempo corre o si es el último periodo
+                    className="btn-next"
+                >
+                    <FaArrowRight />
+                    {/* Botón dinámico */}
+                    {estaEnUltimoPeriodo ? configDeporte.botonFinal : `${configDeporte.botonSiguiente} (${periodoActual + 1})`}
                 </button>
                 
                 <button 
@@ -106,6 +176,7 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
                     className="btn-finalizar"
                     disabled={partido.estado === 'FINALIZADO'}
                 >
+                    <FaFlagCheckered />
                     FINALIZAR PARTIDO
                 </button>
             </div>

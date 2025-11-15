@@ -1,102 +1,202 @@
-// src/pages/MiEquipoDashboard.tsx
+// src/pages/MiEquipoDashboard.tsx (CORREGIDO)
 
 import React, { useEffect, useState } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
-import type { Equipo, SolicitudInscripcion } from '../types'; 
-import './MiEquipoDashboard.css';
+import FormularioInscripcion from '../components/FormularioInscripcion';
+import type { Equipo, SolicitudInscripcion, Torneo } from '../types'; 
+import { useNavigate } from 'react-router-dom';
+import FormularioRoster from '../components/FormularioRoster';
+import './MiEquipoDashboard.css'; 
+import { FaPencilAlt, FaCommentDots, FaTimesCircle, FaCheckCircle } from 'react-icons/fa';
 
-// Datos mock para simular la data del equipo del capitán
-const mockEquipoCapitan: Equipo = {
-    id: 1, nombre: 'Hunters', logoUrl: '/img/hunters.png', facultad: 'Ingeniería', 
-    victorias: 5, derrotas: 1, empates: 2, puntos: 17, jugadores: ['Juan P. (Capitán)', 'Ana L.', 'Carlos M.'],
-    // Añadimos campos del torneo para visualización
-    deporte: 'FÚTBOL', minJugadores: 8, maxJugadores: 12, reglas: 'Reglas estándar.',
-};
+// (Simulamos un objeto Torneo para pasarlo al modal)
+const mockTorneo: Torneo = {
+    id: 101,
+    nombre: 'Torneo de Voleibol Apertura',
+    deporte: 'VOLEIBOL',
+    minJugadores: 6,
+    maxJugadores: 10,
+    fechaLimiteInscripcion: '2025-11-20',
+} as Torneo;
 
-// Estado simulado de la solicitud de inscripción
-const mockSolicitud: Partial<SolicitudInscripcion> & { estado: 'Aprobado' | 'Pendiente' | 'Rechazado', motivo?: string } = {
-    estado: 'Pendiente', 
-    nombreEquipo: 'Hunters',
-};
+
+// (La estructura del Mock se queda igual)
+interface MiEquipoInfo {
+  equipo: Equipo;
+  rolUsuario: 'Capitán' | 'Jugador';
+  solicitud: {
+    idTorneo: number; 
+    estado: 'Aprobado' | 'Pendiente' | 'RequiereCambios' | 'Rechazado';
+    motivo?: string | null; 
+  }
+}
+
+const mockMisEquipos: MiEquipoInfo[] = [
+    { 
+      equipo: { 
+        id: 1, nombre: 'Hunters', logoUrl: '/img/hunters.png', facultad: 'Ingeniería', 
+        victorias: 5, derrotas: 1, empates: 2, puntos: 17, jugadores: ['Juan P. (Capitán)', 'Ana L.', 'Carlos M.'],
+        deporte: 'FÚTBOL', minJugadores: 8, maxJugadores: 12, reglas: 'Reglas estándar.'
+      },
+      rolUsuario: 'Capitán',
+      solicitud: { idTorneo: 100, estado: 'Aprobado', motivo: null }
+    },
+    { 
+      equipo: { 
+        id: 6, nombre: 'Los Nuevos', logoUrl: '/img/logo_placeholder.png', facultad: 'Ingeniería', 
+        victorias: 0, derrotas: 0, empates: 0, puntos: 0, jugadores: ['Juan P. (Capitán)'],
+        deporte: 'VOLEIBOL', minJugadores: 6, maxJugadores: 10, reglas: 'N/A'
+      },
+      rolUsuario: 'Capitán',
+      solicitud: { idTorneo: 101, estado: 'RequiereCambios', motivo: 'El nombre del equipo ("Los Nuevos") no es apropiado. Por favor, cámbialo.' }
+    },
+    { 
+      equipo: { 
+        id: 7, nombre: 'Equipo Fantasma', logoUrl: '/img/logo_placeholder.png', facultad: 'Ingeniería', 
+        victorias: 0, derrotas: 0, empates: 0, puntos: 0, jugadores: ['Jugador Falso 1'],
+        deporte: 'FÚTBOL', minJugadores: 8, maxJugadores: 12, reglas: 'N/A'
+      },
+      rolUsuario: 'Capitán',
+      solicitud: { 
+        idTorneo: 102, // <-- CORRECCIÓN AQUÍ
+        estado: 'Rechazado', 
+        motivo: 'Jugadores no válidos. Inscripción denegada.' 
+      }
+    },
+];
+
 
 const MiEquipoDashboard: React.FC = () => {
-    // Aquí, en una aplicación real, se cargaría el ID del equipo asociado al usuario logueado.
-    const [equipo, setEquipo] = useState<Equipo | null>(null);
-    const [solicitud, setSolicitud] = useState(mockSolicitud);
+    const [misEquipos, setMisEquipos] = useState<MiEquipoInfo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [equipoGestionRoster, setEquipoGestionRoster] = useState<Equipo | null>(null);
+    const [equipoAEditar, setEquipoAEditar] = useState<Equipo | null>(null);
+    const navigate = useNavigate(); 
 
     useEffect(() => {
-        // Simulación de carga de datos del equipo (llamada a la API)
         setTimeout(() => {
-            setEquipo(mockEquipoCapitan);
+            setMisEquipos(mockMisEquipos); 
             setIsLoading(false);
-        }, 800);
-    }, []);
+        }, 500);
+    }, []); 
 
-    if (isLoading) {
-        return <p>Cargando información del equipo...</p>;
-    }
+    const handleCerrarModalRoster = () => setEquipoGestionRoster(null);
+    
+    const handleEditarSolicitud = (equipo: Equipo) => {
+        setEquipoAEditar(equipo); 
+    };
 
-    if (!equipo) {
-        return <p>Aún no estás asociado a un equipo. ¡Crea o únete a uno!</p>;
-    }
+    const handleCerrarModalEdicion = () => {
+        setEquipoAEditar(null);
+    };
 
-    // Lógica para mostrar el mensaje de estado de la solicitud
-    const renderEstadoInscripcion = () => {
-        switch (solicitud.estado) {
+    const renderEstadoInscripcion = (item: MiEquipoInfo) => {
+        const { estado, motivo } = item.solicitud;
+        switch (estado) {
             case 'Aprobado':
-                return <div className="estado-aprobado">✅ Inscripción Aprobada para el Torneo de {equipo.deporte}.</div>;
-            case 'Rechazado':
+                return <div className="estado-tag aprobado"><FaCheckCircle /> Aprobado</div>;
+            case 'Pendiente':
+                return <div className="estado-tag pendiente">⏳ Pendiente</div>;
+            case 'RequiereCambios':
                 return (
-                    <div className="estado-rechazado">
-                        ❌ Solicitud Rechazada. Motivo: **{solicitud.motivo || 'Revisar datos de jugadores/logo.'}**
-                        <button className="btn-secondary">Editar y Reenviar</button>
+                    <div className="estado-tag requiere-cambios"> 
+                        <span><FaCommentDots /> Requiere Cambios</span>
+                        {item.rolUsuario === 'Capitán' && (
+                            <button 
+                                className="btn-editar-solicitud" 
+                                onClick={() => handleEditarSolicitud(item.equipo)} 
+                            >
+                                <FaPencilAlt /> Editar Solicitud
+                            </button>
+                        )}
                     </div>
                 );
-            case 'Pendiente':
+            case 'Rechazado':
+                return (
+                    <div className="estado-tag rechazado-definitivo"> 
+                        <span><FaTimesCircle /> Rechazado</span>
+                    </div>
+                );
             default:
-                return <div className="estado-pendiente">⏳ Solicitud Pendiente de Revisión por el Coordinador.</div>;
+                return null;
         }
     };
+
 
     return (
         <div>
             <HeaderNav />
             <div className="content-container mi-equipo-dashboard">
-                <h1>Dashboard de Equipo: {equipo.nombre}</h1>
-                <p className="sub-header">Gestión y seguimiento de tu equipo como capitán.</p>
+                <h1>Mis Equipos</h1>
+                <p className="sub-header">Gestiona los equipos en los que estás inscrito.</p>
 
-                {/* 1. SECCIÓN DE ESTADO DE INSCRIPCIÓN */}
-                <section className="estado-section">
-                    <h3>Estado de Inscripción</h3>
-                    {renderEstadoInscripcion()}
-                </section>
+                {isLoading && <p>Cargando tus equipos...</p>}
 
-                <div className="dashboard-grid">
-                    {/* 2. SECCIÓN DE ROSTER Y DATOS */}
-                    <section className="roster-section card-info">
-                        <h3>Lista de Jugadores ({equipo.jugadores.length}/{equipo.maxJugadores})</h3>
-                        <ul>
-                            {equipo.jugadores.map((jugador, index) => (
-                                <li key={index}>{jugador}</li>
-                            ))}
-                        </ul>
-                        <button className="btn-secondary">Gestionar Roster</button>
-                    </section>
-                    
-                    {/* 3. SECCIÓN DE ESTADÍSTICAS Y PRÓXIMO JUEGO */}
-                    <section className="stats-section card-info">
-                        <h3>Próximo Partido & Estadísticas</h3>
-                        <p><strong>Puntos:</strong> {equipo.puntos}</p>
-                        <p><strong>Récord (V/D/E):</strong> {equipo.victorias} / {equipo.derrotas} / {equipo.empates}</p>
-                        <hr/>
-                        <p><strong>Próximo Partido:</strong> Miércoles 15 Nov, 7:00 PM</p>
-                        <p>VS **Astros** en Cancha B.</p>
-                    </section>
+                <div className="lista-mis-equipos">
+                    {!isLoading && misEquipos.length === 0 && (
+                        <p>No estás inscrito en ningún equipo actualmente.</p>
+                    )}
+
+                    {misEquipos.map((item) => (
+                        <div key={item.equipo.id} className="card-mi-equipo">
+                            
+                            <div className="card-mi-equipo-header">
+                                <img src={item.equipo.logoUrl} alt="Logo" className="mi-equipo-logo" />
+                                <div className="mi-equipo-info">
+                                    <h3>{item.equipo.nombre}</h3>
+                                    <span className="mi-equipo-deporte">{item.equipo.deporte}</span>
+                                </div>
+                                {renderEstadoInscripcion(item)}
+                            </div>
+                            
+                            {item.solicitud.motivo && (
+                                <div className={`feedback-admin ${item.solicitud.estado === 'Rechazado' ? 'feedback-rojo' : ''}`}>
+                                    <strong><FaCommentDots /> Revisión del Admin:</strong>
+                                    <p>{item.solicitud.motivo}</p>
+                                </div>
+                            )}
+
+                            <div className="mi-equipo-stats">
+                                <p><strong>Victorias:</strong> {item.equipo.victorias}</p>
+                                <p><strong>Derrotas:</strong> {item.equipo.derrotas}</p>
+                                <p><strong>Empates:</strong> {item.equipo.empates}</p>
+                                <p><strong>Puntos:</strong> {item.equipo.puntos}</p>
+                                <p><strong>Jugadores:</strong> {item.equipo.jugadores.length} / {item.equipo.maxJugadores || 'N/A'}</p>
+                            </div>
+                            
+                            {item.rolUsuario === 'Capitán' && (
+                                <button 
+                                    className="btn-primary" 
+                                    onClick={() => setEquipoGestionRoster(item.equipo)}
+                                >
+                                    Administrar Jugadores
+                                </button>
+                            )}
+                        </div>
+                    ))}
                 </div>
             </div>
             <Footer />
+
+            {/* Modal de Roster */}
+            {equipoGestionRoster && (
+                <FormularioRoster
+                    equipo={equipoGestionRoster}
+                    onClose={handleCerrarModalRoster}
+                />
+            )}
+
+            {/* Modal de Edición */}
+            {equipoAEditar && (
+                <FormularioInscripcion
+                    // Usamos el mockTorneo (en una app real, buscarías el torneo por ID)
+                    torneo={mockTorneo} 
+                    equipoAEditar={equipoAEditar}
+                    onClose={handleCerrarModalEdicion}
+                    onSuccess={handleCerrarModalEdicion} 
+                />
+            )}
         </div>
     );
 };

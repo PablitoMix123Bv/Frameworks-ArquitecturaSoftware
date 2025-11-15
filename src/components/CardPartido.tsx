@@ -1,4 +1,4 @@
-// src/components/CardPartido.tsx (Versión Final y Corregida)
+// src/components/CardPartido.tsx (CORREGIDO)
 
 import React from 'react';
 import type { CardPartidoProps, EstadoPartido } from '../types'; 
@@ -38,9 +38,13 @@ const RenderIndicadorEstado: React.FC<{ estado: EstadoPartido }> = ({ estado }) 
       return <div className="estado por-iniciar">PRÓXIMAMENTE</div>;
     case 'CANCELADO':
       return <div className="estado cancelado">CANCELADO</div>;
+    
+    // --- INICIO DE LA CORRECCIÓN ---
     case 'FINALIZADO':
-      // Si finalizó, el marcador es suficiente. Podemos devolver null o una etiqueta simple.
-      return null; 
+      // Añadimos la pastilla gris para 'FINALIZADO'
+      return <div className="estado finalizado">FINALIZADO</div>; 
+    // --- FIN DE LA CORRECCIÓN ---
+
     default:
       return null;
   }

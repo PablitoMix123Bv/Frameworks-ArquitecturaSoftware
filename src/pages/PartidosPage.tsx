@@ -1,10 +1,11 @@
-// src/pages/PartidosPage.tsx
+// src/pages/PartidosPage.tsx (CORREGIDO)
 import React, { useState, useEffect } from 'react';
 import type { Partido } from '../types'; 
 import CardPartido from '../components/CardPartido';
 import HeaderNav from '../components/HeaderNav'; 
-import Footer from '../components/Footer'; // Eliminado si no existe
+import Footer from '../components/Footer';
 import FiltroDeporte from '../components/FiltroDeporte';
+
 // --- Datos Mock (Simulación) ---
 const mockPartidos: Partido[] = [
   {
@@ -32,7 +33,7 @@ const mockPartidos: Partido[] = [
     estado: 'POR INICIAR',
     marcadorLocal: null,
     marcadorVisitante: null,
-    Deporte: 'FUTBOL',
+    Deporte: 'BALONCESTO', // Deporte diferente para probar el filtro
   },
 ];
 
@@ -47,8 +48,21 @@ const PartidosPage: React.FC = () => {
     setTimeout(() => {
       setPartidos(mockPartidos); 
       setIsLoading(false);
-    }, 500); // Reducido el tiempo de carga
+    }, 500);
   }, []); 
+
+  // --- INICIO DE LA CORRECCIÓN ---
+  // Lógica para filtrar los partidos basada en el estado 'deporteSeleccionado'
+  const partidosFiltrados = partidos.filter(partido => {
+    // Si el filtro es 'TODOS', muestra todos los partidos
+    if (deporteSeleccionado === 'TODOS') {
+      return true;
+    }
+    // Compara el deporte del partido (en mayúsculas) con el filtro
+    // Asumimos que el filtro también viene en mayúsculas (como en FiltroDeporte.tsx)
+    return partido.Deporte.toUpperCase() === deporteSeleccionado;
+  });
+  // --- FIN DE LA CORRECCIÓN ---
 
   
   return (
@@ -66,12 +80,20 @@ const PartidosPage: React.FC = () => {
         {isLoading && <p>Cargando partidos...</p>}
         
         <div className="partidos-list">
-          {partidos.map((partido) => (
-            <CardPartido 
-              key={partido.id} 
-              partido={partido}
-            />
-          ))}
+          
+          {/* CORRECCIÓN: Usamos 'partidosFiltrados' en lugar de 'partidos' */}
+          {partidosFiltrados.length > 0 ? (
+            partidosFiltrados.map((partido) => (
+              <CardPartido 
+                key={partido.id} 
+                partido={partido}
+              />
+            ))
+          ) : (
+            // Mensaje si no hay partidos para ese filtro
+            <p>No hay partidos programados para el deporte seleccionado.</p>
+          )}
+
         </div>
       </div>
       <Footer/>

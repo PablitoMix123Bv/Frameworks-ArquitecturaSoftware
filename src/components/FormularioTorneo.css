@@ -1,4 +1,4 @@
-/* src/components/FormularioTorneo.css */
+/* src/components/FormularioTorneo.css (CORREGIDO) */
 
 /* Estilos de Fondo Oscuro y Centrado */
 .modal-overlay {
@@ -11,7 +11,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Asegura que esté por encima de todo */
+    
+    /* --- CORRECCIÓN DE Z-INDEX --- */
+    /* Aumentamos el z-index para asegurar que esté sobre el HeaderNav */
+    z-index: 2000; 
 }
 
 /* Contenido del Modal (Caja Blanca) */
@@ -20,7 +23,12 @@
     padding: 30px;
     border-radius: 10px;
     width: 90%;
-    max-width: 500px;
+    
+    /* --- CORRECCIÓN DE TAMAÑO --- */
+    max-width: 450px; /* Lo hacemos un poco más angosto */
+    max-height: 90vh; /* Altura máxima del 90% de la ventana */
+    overflow-y: auto;   /* Permite scroll si el contenido es muy largo */
+
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     color: #333;
@@ -38,6 +46,7 @@
 }
 
 .modal-content h2 {
+    margin-top: 0; /* Asegura que el título no tenga margen superior */
     margin-bottom: 25px;
     color: #1976D2;
     border-bottom: 1px solid #EEE;
@@ -62,14 +71,14 @@
     border: 1px solid #CCC;
     border-radius: 4px;
     font-size: 1rem;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Importante para que el padding no desborde */
 }
 
 .form-group textarea {
     resize: vertical;
 }
 
-/* Estilo para el grupo de campos lado a lado (Min/Max Jugadores) */
+/* Estilo para el grupo de campos lado a lado */
 .form-group-row {
     display: flex;
     gap: 20px;
@@ -78,4 +87,10 @@
 
 .form-group-row .half {
     flex: 1; /* Distribuye el espacio a partes iguales */
+}
+
+/* Botón de Submit (re-añadido por si se usa .btn-primary genérico) */
+.modal-content button.btn-primary {
+    width: 100%;
+    margin-top: 10px;
 }

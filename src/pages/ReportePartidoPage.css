@@ -1,0 +1,87 @@
+/* src/pages/ReportePartidoPage.css */
+
+.reporte-card {
+    max-width: 900px;
+    margin: 30px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.reporte-header {
+    background-color: #115293; /* Azul muy oscuro */
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reporte-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.reporte-deporte {
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.reporte-equipos {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 40px 30px;
+    text-align: center;
+}
+
+.equipo-col {
+    width: 40%;
+}
+
+.equipo-logo-reporte {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.equipo-col h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: #333;
+}
+
+.marcador-final {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-top: 10px;
+    display: block;
+}
+.marcador-final.local {
+    color: #1976D2; /* Azul para el marcador */
+}
+.marcador-final.visitante {
+    color: #1976D2;
+}
+
+.vs-reporte {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #999;
+}
+
+.reporte-footer {
+    background-color: #F8F8F8;
+    padding: 20px 30px;
+    text-align: center;
+    border-top: 1px solid #E0E0E0;
+}
+.reporte-footer p {
+    color: #777;
+    margin-top: 0;
+}

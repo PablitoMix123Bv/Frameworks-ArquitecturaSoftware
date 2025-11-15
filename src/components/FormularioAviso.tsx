@@ -99,9 +99,8 @@ const FormularioAviso: React.FC<FormularioAvisoProps> = ({ avisoAEditar, onClose
               ))}
             </select>
           </div>
-
           <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-            {isEditing ? 'Actualizar Aviso' : 'Publicar Aviso'}
+            {isEditing ? 'Actualizar Aviso' : 'Publicar Aviso'} 
           </button>
         </form>
       </div>

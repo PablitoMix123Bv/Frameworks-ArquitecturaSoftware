@@ -1,4 +1,4 @@
-/* src/components/CardPartido.css (Versión Final y Corregida de Estilos) */
+/* src/components/CardPartido.css (CORREGIDO) */
 
 .card-partido {
     display: flex;
@@ -19,7 +19,7 @@
 
 /* --- COLUMNA IZQUIERDA: EQUIPOS Y VS --- */
 .partido-info-principal {
-    display: flex; /* Alinea los bloques de equipo y el VS horizontalmente */
+    display: flex; 
     align-items: center;
     justify-content: space-between;
     width: 65%;
@@ -27,7 +27,7 @@
 
 .equipo-datos {
     display: flex; 
-    flex-direction: column; /* Alinea Logo sobre Nombre (vertical) */
+    flex-direction: column; 
     align-items: center;
     width: 40%;
 }
@@ -60,7 +60,7 @@
     justify-content: center;
     align-items: center;
     width: 30%;
-    gap: 8px; /* Espacio entre el tablero y la pastilla de estado */
+    gap: 8px; 
 }
 
 /* 1. Estilo BASE del Tablero (Contenedor de los scores) */
@@ -73,7 +73,6 @@
     color: white;
 }
 
-/* Estilo para los bloques de score (el diseño azul que no se veía) */
 .tablero .score {
     font-size: 1.8rem;
     background-color: #1976D2; /* Azul principal */
@@ -105,6 +104,13 @@
 .cancelado {
     background-color: #F44336; /* Rojo */
 }
+
+/* --- INICIO DE LA CORRECCIÓN --- */
+.finalizado {
+    background-color: #9622ef; /* Gris oscuro para finalizado */
+}
+/* --- FIN DE LA CORRECCIÓN --- */
+
 
 /* Animación para el estado EN PROCESO */
 @keyframes pulse {

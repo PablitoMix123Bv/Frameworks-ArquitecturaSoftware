@@ -1,78 +1,113 @@
-/* src/components/HeaderNav.css */
+/* src/components/HeaderNav.css (CORREGIDO - Sin Amarillo) */
 
-.header-container {
-    background-color: #1976D2; /* Fondo de la barra superior */
-    padding: 10px 20px;
+/* 1. BARRA SUPERIOR (Donde va "SportFlow FIF" y "Cerrar Sesión") */
+.sportflow-top-bar {
+    background-color: #1976D2; /* Azul principal */
     color: white;
+    padding: 0 20px; /* Padding solo a los lados */
+    width: 100%;
+    box-sizing: border-box; /* Asegura que el padding no añada ancho */
+    position: relative; 
+    z-index: 100; 
+    
+    /* Anulan cualquier margin o max-width que venga del #root */
+    margin: 0;
+    max-width: none;
+}
+
+.sportflow-top-bar__content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 60px;
+    
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .title {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #ccc;
-}
-
-.nav-bar-container {
-    background-color: #1976D2; /* El color azul principal de la navegación */
-    display: flex;
-    justify-content: flex-start;
-    padding: 0 20px;
-    gap: 2px; /* Espacio entre pestañas */
-}
-
-.nav-tab {
-    padding: 12px 20px;
-    color: white;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background-color 0.2s, opacity 0.2s;
-    background-color: rgba(0, 0, 0, 0.1); /* Ligero fondo para pestañas inactivas */
-    border-radius: 0;
-    opacity: 0.8;
-}
-
-/* Estilo para la pestaña ACTIVA (la que se está viendo) */
-.nav-tab.active {
-    background-color: #1565C0; /* Un azul ligeramente más oscuro */
-    opacity: 1;
-    font-weight: bold;
-    position: relative;
-    /* Efecto de borde inferior para resaltar la pestaña activa */
-    border-bottom: 3px solid #FFC107; /* Amarillo de acento */
-}
-
-.nav-tab:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .auth-controls {
     display: flex;
     gap: 15px;
     align-items: center;
-    /* Estilos para el botón de perfil/login */
 }
 
-.auth-controls {
+/* 2. BARRA DE NAVEGACIÓN (Donde van las pestañas) */
+.sportflow-nav-bar {
+    background-color: #1565C0; /* Azul más oscuro */
+    width: 100%;
     display: flex;
-    gap: 10px; /* Separación entre los botones */
-    align-items: center;
+    justify-content: center; /* Centra el contenedor de pestañas */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 99; 
+    
+    margin: 0;
+    max-width: none;
 }
 
-.btn-secondary {
-    background-color: #f44336; /* Rojo para cerrar sesión */
+.sportflow-nav-links {
+    display: flex;
+    max-width: 1400px; 
+    width: 100%;
+}
+
+.nav-tab {
+    padding: 14px 20px;
     color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    opacity: 0.8;
 }
 
-.btn-secondary:hover {
-    background-color: #d32f2f;
+.nav-tab:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
 }
+
+.nav-tab.active {
+    background-color: #115293; /* Azul aún más oscuro */
+    opacity: 1;
+    font-weight: bold;
+    box-shadow: inset 0 -3px 0 #FFC107; /* Acento amarillo solo en el borde */
+}
+
+
+/* --- INICIO DE LA CORRECCIÓN --- */
+/* Eliminamos las reglas que ponían el fondo amarillo */
+
+.nav-tab.admin {
+    /* Ya no necesita fondo amarillo */
+    /* background-color: #FFC107; */ 
+    
+    /* El color del texto debe ser blanco, como los demás */
+    color: white; 
+}
+
+.nav-tab.admin:hover {
+    /* El hover debe ser el mismo que los demás */
+    background-color: rgba(255, 255, 255, 0.1); 
+    opacity: 1;
+}
+
+.nav-tab.admin.active {
+    /* El activo debe ser el mismo azul oscuro */
+    background-color: #115293; 
+    /* Mantenemos el acento amarillo en el borde */
+    box-shadow: inset 0 -3px 0 #FFC107; 
+}
+/* --- FIN DE LA CORRECCIÓN --- */
+
+
+/* Separador (si estás logueado) */
+.nav-separator {
+    border-left: 1px solid #115293;
+    margin: 10px 5px;
+}
+
+/* (Los estilos de .btn-primary y .btn-secondary ya están en main.css) */

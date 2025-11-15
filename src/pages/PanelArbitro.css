@@ -1,4 +1,4 @@
-/* src/pages/PanelArbitro.css */
+/* src/pages/PanelArbitro.css (VERSIÓN CORREGIDA FINAL) */
 
 .arbitro-dashboard {
     padding: 30px;
@@ -23,36 +23,56 @@
 
 .card-partido-arbitro {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
+    /* justify-content: space-between; <-- ELIMINAMOS ESTE CULPABLE */
+    align-items: center; 
+    background-color: white; /* Mantenemos el fondo blanco de tu imagen */
     border: 1px solid #E0E0E0;
     border-radius: 8px;
-    padding: 15px 25px;
+    padding: 20px 25px; 
     margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* --- 1. ARREGLO BOTÓN A LA DERECHA --- */
+.partido-info-resumen {
+    flex: 1; /* <-- Esto empuja el botón a la derecha */
+    padding-right: 20px; 
+}
+
 .partido-info-resumen h4 {
     color: #1976D2;
-    margin-bottom: 5px;
+    margin: 0 0 5px 0;
     font-size: 1.2rem;
 }
 
-.card-partido-arbitro button {
-    padding: 10px 20px;
+.partido-info-resumen p {
+    margin: 0;
     font-weight: bold;
+    color: #555;
 }
 
-/* Indicadores de Estado */
+/* --- 2. ARREGLO BOTÓN REDONDEADO Y ESPACIADO --- */
+.card-partido-arbitro .btn-primary {
+    flex-shrink: 0; /* No se encoge */
+    width: auto; /* El ancho será automático */
+    padding: 10px 20px; /* Padding normal */
+    
+    border-radius: 20px; /* <-- BOTÓN REDONDEADO */
+
+    display: flex; /* <-- Para alinear icono y texto */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* <-- ESPACIO ENTRE ICONO Y TEXTO */
+}
+
+
+/* Indicadores de Estado (Borde izquierdo) */
 .estado-por-iniciar {
     border-left: 5px solid #FFC107; /* Amarillo */
 }
-
 .estado-en-proceso {
     border-left: 5px solid #4CAF50; /* Verde */
 }
-
 .estado-finalizado {
     border-left: 5px solid #555; /* Gris oscuro */
 }

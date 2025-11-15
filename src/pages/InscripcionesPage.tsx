@@ -1,40 +1,40 @@
-// src/pages/InscripcionesPage.tsx
+// src/pages/InscripcionesPage.tsx (CORREGIDO)
 
 import React, { useState } from 'react';
-import HeaderNav from '../components/HeaderNav'; 
-import FormularioInscripcion from '../components/FormularioInscripcion';
-import { useAuth } from '../context/AuthContext'; // Para verificar si es estudiante/capitán
-import type { Torneo } from '../types'; 
-import { useNavigate } from 'react-router-dom';
-import './InscripcionesPage.css';
+import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
-// Datos mock de torneos disponibles para inscripción
+import FormularioInscripcion from '../components/FormularioInscripcion'; 
+import type { Torneo, SolicitudInscripcion } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import './InscripcionesPage.css'; 
+
+// (Los mocks se quedan igual)
 const mockTorneosDisponibles: Torneo[] = [
-    { id: 101, nombre: 'Fútbol Apertura 2026', deporte: 'FÚTBOL', lugar: 'Canchas FIF', minJugadores: 8, maxJugadores: 12, fechaInicio: '2026-03-01', fechaFin: '2026-05-30', fechaLimiteInscripcion: '2026-02-15', descripcion: 'Torneo regular de la facultad.', detalles: 'Abierto a todos.', reglas: 'Reglas FIFA.' },
-    { id: 102, nombre: 'Baloncesto Relámpago', deporte: 'BALONCESTO', lugar: 'Gimnasio', minJugadores: 5, maxJugadores: 8, fechaInicio: '2026-04-10', fechaFin: '2026-04-20', fechaLimiteInscripcion: '2026-03-30', descripcion: 'Torneo rápido de 3 contra 3.', detalles: 'Solo equipos de la FIF.', reglas: 'Reglas FIBA.' },
-    // Asumimos que aquí solo se listan los torneos con inscripción abierta
+    { id: 101, nombre: 'Torneo de Voleibol Apertura', deporte: 'VOLEIBOL', minJugadores: 6, maxJugadores: 10, fechaLimiteInscripcion: '2025-11-20', detalles: '', lugar: '', fechaInicio: '', fechaFin: '', reglas: '', descripcion: '' },
+    { id: 102, nombre: 'Liga de Fútbol Rápido', deporte: 'FUTBOL', minJugadores: 7, maxJugadores: 12, fechaLimiteInscripcion: '2025-11-25', detalles: '', lugar: '', fechaInicio: '', fechaFin: '', reglas: '', descripcion: '' },
 ];
 
-
 const InscripcionesPage: React.FC = () => {
+    const [torneoSeleccionado, setTorneoSeleccionado] = useState<Torneo | null>(null);
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
     
-    // Estado para controlar el modal de inscripción
-    const [modalAbierto, setModalAbierto] = useState(false);
-    // Estado para guardar la información del torneo seleccionado (para pasar al formulario)
-    const [torneoSeleccionado, setTorneoSeleccionado] = useState<Torneo | null>(null);
-
-    // Determina si el usuario es un estudiante/capitán y puede inscribir
-    const puedeInscribir = isLoggedIn && user?.rol === 'jugador'; 
+    // Solo permitimos inscribir si es jugador (capitán)
+    const puedeInscribir = isLoggedIn && user?.rol === 'jugador';
 
     const handleInscribirClick = (torneo: Torneo) => {
-        if (!puedeInscribir) {
-            alert('Debes iniciar sesión como estudiante para inscribir un equipo.');
-            return;
-        }
         setTorneoSeleccionado(torneo);
-        setModalAbierto(true);
+    };
+
+    const handleCloseModal = () => {
+        setTorneoSeleccionado(null);
+    };
+
+    const handleSuccess = (solicitud: SolicitudInscripcion) => {
+        handleCloseModal();
+        // Opcional: Redirigir al dashboard del equipo
+        navigate('/perfil/mi-equipo');
     };
 
     return (
@@ -48,11 +48,10 @@ const InscripcionesPage: React.FC = () => {
                         <div className="torneo-info">
                             <h3>{torneo.nombre} ({torneo.deporte})</h3>
                             <p><strong>Límite de Inscripción:</strong> {torneo.fechaLimiteInscripcion}</p>
-                            <p><strong>Jugadores Requeridos:</strong> {torneo.minJugadores} - {torneo.maxJugadores}</p>
+                            <p><strong>Mínimo de jugadores:</strong> {torneo.minJugadores}</p>
+                            <p><strong>Máximo de jugadores:</strong> {torneo.maxJugadores}</p>
                         </div>
-
                         <div className="torneo-actions">
-                            {/* Renderizado condicional del botón de acción */}
                             {puedeInscribir ? (
                                 <button 
                                     className="btn-primary" 
@@ -71,17 +70,16 @@ const InscripcionesPage: React.FC = () => {
                         </div>
                     </div>
                 ))}
-                
             </div>
             <Footer />
-            {/* Modal de Inscripción */}
-            {modalAbierto && torneoSeleccionado && (
+            
+            {torneoSeleccionado && (
                 <FormularioInscripcion
-                    idTorneo={torneoSeleccionado.id}
-                    minJugadores={torneoSeleccionado.minJugadores}
-                    maxJugadores={torneoSeleccionado.maxJugadores}
-                    onClose={() => setModalAbierto(false)}
-                    onSuccess={() => setModalAbierto(false)}
+                    torneo={torneoSeleccionado}
+                    // --- 1. PASAMOS 'undefined' AQUI ---
+                    equipoAEditar={undefined} 
+                    onClose={handleCloseModal}
+                    onSuccess={handleSuccess}
                 />
             )}
         </div>

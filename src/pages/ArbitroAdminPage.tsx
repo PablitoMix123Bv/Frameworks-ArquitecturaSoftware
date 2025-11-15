@@ -1,11 +1,15 @@
-// src/pages/ArbitroAdminPage.tsx
+// src/pages/ArbitroAdminPage.tsx (CORREGIDO)
 
 import React, { useState } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioArbitro from '../components/FormularioArbitro'; 
 import type { Arbitro } from '../types'; 
-import './ArbitroAdminPage.css';
+import './ArbitroAdminPage.css'; // Sigue usando su propio CSS
+
+// 1. Importamos los iconos
+import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
+
 // Datos mock
 const mockArbitros: Arbitro[] = [
     { id: 1, nombreCompleto: 'Laura González', email: 'laura.g@uaq.mx', rol: 'árbitro' },
@@ -17,12 +21,11 @@ const ArbitroAdminPage: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [arbitroAEditar, setArbitroAEditar] = useState<Arbitro | null>(null);
 
-    const handleSuccess = () => { /* Recargar lista */ setIsModalOpen(false); };
+    const handleSuccess = () => { setIsModalOpen(false); };
     const handleEdit = (arbitro: Arbitro) => { setArbitroAEditar(arbitro); setIsModalOpen(true); };
     
     const handleDelete = (id: number) => {
         if (window.confirm('¿Desea revocar el rol de árbitro a este usuario?')) {
-            // En una aplicación real, aquí se llamaría a la API para cambiar el rol del usuario a 'estudiante' o eliminarlo.
             setArbitros(arbitros.filter(a => a.id !== id));
         }
     };
@@ -31,12 +34,19 @@ const ArbitroAdminPage: React.FC = () => {
         <div>
             <HeaderNav /> 
             <div className="content-container">
-                <div className="admin-avisos-header">
+                
+                {/* --- 2. ESTRUCTURA DE ENCABEZADO CORREGIDA --- */}
+                <div className="admin-page-header">
                     <h2>Gestión de Árbitros</h2>
-                    <button className="btn-primary" onClick={() => { setArbitroAEditar(null); setIsModalOpen(true); }}>
-                        + Añadir Árbitro
-                    </button>
+                    
+                    <div className="admin-header-actions">
+                        <button className="btn-primary" onClick={() => { setArbitroAEditar(null); setIsModalOpen(true); }}>
+                            <FaPlus /> Añadir Árbitro
+                        </button>
+                    </div>
                 </div>
+                {/* --- FIN DE LA CORRECCIÓN --- */}
+
                 
                 <div className="arbitros-list">
                     {arbitros.map(arbitro => (
@@ -46,8 +56,12 @@ const ArbitroAdminPage: React.FC = () => {
                                 <p>{arbitro.email}</p>
                             </div>
                             <div className="arbitro-actions">
-                                <button className="btn-icon edit" onClick={() => handleEdit(arbitro)}>✏️</button>
-                                <button className="btn-icon delete" onClick={() => handleDelete(arbitro.id)}>🗑️</button>
+                                <button className="btn-icon edit" onClick={() => handleEdit(arbitro)}>
+                                    <FaPencilAlt />
+                                </button>
+                                <button className="btn-icon delete" onClick={() => handleDelete(arbitro.id)}>
+                                    <FaTrash />
+                                </button>
                             </div>
                         </div>
                     ))}

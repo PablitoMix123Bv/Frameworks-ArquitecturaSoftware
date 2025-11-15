@@ -1,20 +1,22 @@
-// src/components/FormularioTorneo.tsx (Implementación de nuevos campos)
+// src/components/FormularioTorneo.tsx (CORREGIDO)
 
 import React, { useState } from 'react';
 import type { FormularioTorneoProps, Torneo } from '../types'; 
 import './FormularioTorneo.css';
 
-// Función auxiliar para inicializar el estado del formulario (AÑADIR NUEVOS CAMPOS)
+// Función auxiliar para inicializar el estado del formulario
 const initializeFormState = (torneo: Torneo | null) => ({
   nombre: torneo?.nombre || '',
   deporte: torneo?.deporte || '',
   fechaLimiteInscripcion: torneo?.fechaLimiteInscripcion || '',
   descripcion: torneo?.descripcion || '',
   lugar: torneo?.lugar || '',
-  minJugadores: torneo?.minJugadores || 0, // Inicializar números a 0
+  minJugadores: torneo?.minJugadores || 0,
   maxJugadores: torneo?.maxJugadores || 0,
   reglas: torneo?.reglas || '',
-  // ... (otros campos)
+  // Asumimos que también querrás manejar estas fechas
+  fechaInicio: torneo?.fechaInicio || '',
+  fechaFin: torneo?.fechaFin || '',
 });
 
 const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, onSuccess }) => {
@@ -22,11 +24,9 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
   const [formData, setFormData] = useState(initializeFormState(torneo));
   const isEditing = !!torneo; 
   
-  // Modificar handleChange para manejar correctamente números de los inputs
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
-    // Si es un campo de tipo número, convertimos el valor a número, sino lo mantenemos como cadena
     const newValue = type === 'number' ? parseInt(value) || 0 : value; 
     
     setFormData(prevData => ({ ...prevData, [name]: newValue }));
@@ -35,13 +35,11 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // TODO: IMPLEMENTAR VALIDACIÓN DE FRONTEND antes de llamar a la API
     if (formData.minJugadores > formData.maxJugadores) {
         alert('Error: La cantidad mínima de jugadores no puede ser mayor que la máxima.');
         return;
     }
     
-    // Lógica de POST o PUT a la API (simulación)
     console.log('Datos de Torneo enviados:', formData);
     alert(`Torneo ${isEditing ? 'actualizado' : 'creado'} con éxito.`);
 
@@ -49,7 +47,6 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
     onClose();
   };
   
-  // Estructura del Modal (JSX)
   return (
     <div className="modal-overlay"> 
       <div className="modal-content"> 
@@ -65,10 +62,16 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
             <input type="text" id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} required />
           </div>
 
-          {/* Campo Deporte (Select - Dropdown) */}
+          {/* --- CORRECCIÓN 1: CAMPO DEPORTE --- */}
           <div className="form-group">
             <label htmlFor="deporte">Deporte</label>
-            {/* ... (Select con opciones de Deporte) ... */}
+            <select id="deporte" name="deporte" value={formData.deporte} onChange={handleChange} required>
+                <option value="" disabled>Seleccione un deporte</option>
+                <option value="FÚTBOL">Fútbol</option>
+                <option value="BALONCESTO">Baloncesto</option>
+                <option value="VOLEIBOL">Voleibol</option>
+                <option value="BÉISBOL">Béisbol</option>
+            </select>
           </div>
           
           {/* Campo Lugar del Evento */}
@@ -77,10 +80,10 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
             <input type="text" id="lugar" name="lugar" value={formData.lugar} onChange={handleChange} required />
           </div>
 
-          {/* Campo Fecha Límite de Inscripción */}
+          {/* --- CORRECCIÓN 2: CAMPO FECHA LÍMITE (CALENDARIO) --- */}
           <div className="form-group">
             <label htmlFor="fechaLimiteInscripcion">Fecha Límite de Inscripción</label>
-            {/* ... (Input tipo date) ... */}
+            <input type="date" id="fechaLimiteInscripcion" name="fechaLimiteInscripcion" value={formData.fechaLimiteInscripcion} onChange={handleChange} required />
           </div>
 
           {/* GRUPO DE VALIDACIÓN DE JUGADORES */}
@@ -101,10 +104,10 @@ const FormularioTorneo: React.FC<FormularioTorneoProps> = ({ torneo, onClose, on
             <textarea id="reglas" name="reglas" placeholder="Ingrese reglas específicas del torneo..." rows={4} value={formData.reglas} onChange={handleChange} />
           </div>
 
-          {/* Campo Descripción del Torneo */}
+          {/* --- CORRECCIÓN 3: CAMPO DESCRIPCIÓN --- */}
           <div className="form-group">
             <label htmlFor="descripcion">Descripción</label>
-            {/* ... (Textarea de descripción) ... */}
+            <textarea id="descripcion" name="descripcion" placeholder="Descripción breve del torneo..." rows={3} value={formData.descripcion} onChange={handleChange} />
           </div>
 
 

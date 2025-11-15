@@ -1,4 +1,4 @@
-/* src/components/FormularioRegistroMarcador.css */
+/* src/components/FormularioRegistroMarcador.css (CORREGIDO) */
 
 .marcador-control-box {
     max-width: 800px;
@@ -55,6 +55,7 @@
 .cuarto-display {
     font-size: 1.2rem;
     align-self: center;
+    text-transform: uppercase; /* Para que se vea bien "TIEMPO" o "CUARTO" */
 }
 
 /* --- Controles de Puntaje --- */
@@ -104,9 +105,29 @@
     cursor: pointer;
     color: white;
     transition: background-color 0.2s;
+
+    /* --- NUEVO: Estilos para iconos en botones --- */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espacio entre icono y texto */
+    font-size: 0.95rem; /* Ajustamos tamaño de letra */
 }
 
+/* --- ESTADOS DE BOTÓN --- */
 .btn-start { background-color: #4CAF50; } /* Verde */
 .btn-pause { background-color: #FF9800; } /* Naranja */
 .btn-next { background-color: #1976D2; } /* Azul */
 .btn-finalizar { background-color: #D32F2F; } /* Rojo */
+
+.btn-start:hover { background-color: #388E3C; }
+.btn-pause:hover { background-color: #F57C00; }
+.btn-next:hover { background-color: #1565C0; }
+.btn-finalizar:hover { background-color: #C62828; }
+
+/* Botón deshabilitado (para "Siguiente Cuarto" cuando ya no hay más) */
+.juego-controles button:disabled {
+    background-color: #9E9E9E;
+    color: #E0E0E0;
+    cursor: not-allowed;
+}

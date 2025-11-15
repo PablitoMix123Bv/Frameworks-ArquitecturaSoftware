@@ -1,12 +1,16 @@
-// src/pages/AvisosAdminPage.tsx
+// src/pages/AvisosAdminPage.tsx (CORREGIDO)
 
 import React, { useState } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioAviso from '../components/FormularioAviso';
 import type { Aviso } from '../types'; 
-import './AvisosAdminPage.css';
-// Datos mock (reutiliza los de la vista pública)
+import './AvisosAdminPage.css'; // Sigue usando su propio CSS
+
+// 1. Importamos el icono que vamos a usar
+import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
+
+// Datos mock
 const mockAvisos: Aviso[] = [
     { id: 1, titulo: 'Inscripciones Abiertas', contenido: 'Recuerden que el límite es el 15 de febrero.', fechaPublicacion: '2025-10-25', autor: 'Coordinador A', categoria: 'INSCRIPCIÓN', prioridad: 'URGENTE', idTorneoAsociado: 101 },
     { id: 2, titulo: 'Reglas Canchas', contenido: 'La cancha A solo puede usarse después de las 5 PM.', fechaPublicacion: '2025-10-20', autor: 'Coordinador B', categoria: 'GENERAL', prioridad: 'NORMAL', idTorneoAsociado: null },
@@ -18,7 +22,6 @@ const AvisosAdminPage: React.FC = () => {
     const [avisoAEditar, setAvisoAEditar] = useState<Aviso | null>(null);
 
     const handleSuccess = () => {
-        // En una app real, aquí se recargaría la lista desde el backend
         console.log("Lista de avisos actualizada.");
         setIsModalOpen(false);
     };
@@ -36,17 +39,25 @@ const AvisosAdminPage: React.FC = () => {
 
     return (
         <div>
-            <HeaderNav /> {/* Se usará el menú del administrador si está logueado */}
+            <HeaderNav />
             <div className="content-container">
-                <div className="admin-avisos-header">
-                    <h2>Gestión de Avisos y Comunicados</h2>
-                    <button 
-                        className="btn-primary" 
-                        onClick={() => { setAvisoAEditar(null); setIsModalOpen(true); }}
-                    >
-                        + Crear Nuevo Aviso
-                    </button>
+                
+                {/* --- 2. ESTRUCTURA DE ENCABEZADO CORREGIDA --- */}
+                <div className="admin-page-header">
+                    <h2>Gestión de Avisos</h2>
+                    
+                    {/* Agrupamos el botón a la derecha */}
+                    <div className="admin-header-actions">
+                        <button 
+                            className="btn-primary" 
+                            onClick={() => { setAvisoAEditar(null); setIsModalOpen(true); }}
+                        >
+                            <FaPlus /> Crear Nuevo Aviso
+                        </button>
+                    </div>
                 </div>
+                {/* --- FIN DE LA CORRECCIÓN --- */}
+
 
                 <div className="avisos-admin-list">
                     {avisos.map(aviso => (
@@ -57,8 +68,12 @@ const AvisosAdminPage: React.FC = () => {
                                 <small>Categoría: {aviso.categoria} | Prioridad: {aviso.prioridad}</small>
                             </div>
                             <div className="aviso-actions">
-                                <button className="btn-icon edit" onClick={() => handleEdit(aviso)}>✏️</button>
-                                <button className="btn-icon delete" onClick={() => handleDelete(aviso.id)}>🗑️</button>
+                                <button className="btn-icon edit" onClick={() => handleEdit(aviso)}>
+                                    <FaPencilAlt />
+                                </button>
+                                <button className="btn-icon delete" onClick={() => handleDelete(aviso.id)}>
+                                    <FaTrash />
+                                </button>
                             </div>
                         </div>
                     ))}

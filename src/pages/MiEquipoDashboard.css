@@ -1,85 +1,162 @@
-/* src/pages/MiEquipoDashboard.css */
+/* src/pages/MiEquipoDashboard.css (CORREGIDO) */
 
-.mi-equipo-dashboard {
-    padding: 30px;
-}
+.mi-equipo-dashboard h1 { color: #1976D2; margin-bottom: 5px; font-size: 2rem; }
+.sub-header { color: #555; margin-bottom: 30px; }
 
-.mi-equipo-dashboard h1 {
-    color: #1976D2;
-    margin-bottom: 5px;
-    font-size: 2rem;
-}
-
-.sub-header {
-    color: #555;
-    margin-bottom: 30px;
-}
-
-.dashboard-grid {
+/* --- Lista de Equipos --- */
+.lista-mis-equipos {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+    grid-template-columns: repeat(2, 1fr); 
     gap: 30px;
     margin-top: 20px;
 }
 
-.card-info {
-    background-color: #F8F8F8;
+@media (max-width: 900px) {
+    .lista-mis-equipos {
+        grid-template-columns: 1fr;
+    }
+}
+
+.card-mi-equipo {
+    background-color: white; 
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    border: 1px solid #E0E0E0;
 }
 
-.card-info h3 {
-    border-bottom: 2px solid #E0E0E0;
-    padding-bottom: 10px;
+.card-mi-equipo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
     margin-bottom: 15px;
-    color: #333;
 }
 
-.card-info ul {
-    list-style: disc;
-    padding-left: 20px;
+.mi-equipo-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: #F0F0F0;
+    border: 1px solid #EEE;
+    flex-shrink: 0;
 }
 
-/* --- Estilos de Estado de Solicitud --- */
-
-.estado-section {
-    margin-bottom: 30px;
-}
-
-.estado-section h3 {
+.mi-equipo-info { flex-grow: 1; }
+.mi-equipo-info h3 { margin: 0 0 5px 0; color: #333; font-size: 1.3rem; }
+.mi-equipo-deporte {
+    font-size: 0.9rem;
+    font-weight: bold;
     color: #555;
-    margin-bottom: 10px;
+    background-color: #E0E0E0;
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block; 
 }
 
-.estado-aprobado, .estado-pendiente, .estado-rechazado {
-    padding: 15px;
+/* --- ESTILOS DE ESTADO (TAGS) --- */
+.estado-tag {
+    padding: 6px 10px;
     border-radius: 6px;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 0.85rem;
+    text-align: center;
+    flex-shrink: 0;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 8px;
     align-items: center;
 }
 
-.estado-aprobado {
-    background-color: #E8F5E9; /* Verde claro */
-    border: 1px solid #4CAF50;
-    color: #4CAF50;
+/* --- CORRECCIÓN PUNTO 2 (Icono Aprobado) --- */
+.estado-tag.aprobado { 
+    background-color: #E8F5E9; 
+    color: #4CAF50; 
+    flex-direction: row; /* Para alinear icono y texto */
+    gap: 5px; /* Un espacio más pequeño */
 }
 
-.estado-pendiente {
-    background-color: #FFFDE7; /* Amarillo claro */
-    border: 1px solid #FFC107;
-    color: #FFC107;
-}
+.estado-tag.pendiente { background-color: #FFFDE7; color: #FFC107; }
 
-.estado-rechazado {
-    background-color: #FFEBEE; /* Rojo claro */
-    border: 1px solid #D32F2F;
+/* "Requiere Cambios" (Amarillo) */
+.estado-tag.requiere-cambios {
+    background-color: #FFFDE7;
+    color: #b08100;
+}
+.btn-editar-solicitud {
+    background-color: #FF9800; /* Naranja */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-editar-solicitud:hover { background-color: #F57C00; }
+
+/* "Rechazado Definitivo" (Rojo) */
+.estado-tag.rechazado-definitivo {
+    background-color: #FFEBEE;
     color: #D32F2F;
 }
 
-.estado-rechazado button {
-    margin-left: 20px;
+/* --- Cuadro de Retroalimentación del Admin --- */
+.feedback-admin {
+    background-color: #FFFDE7; /* Amarillo pálido */
+    border: 1px solid #FFC107;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+}
+.feedback-admin.feedback-rojo {
+    background-color: #FFEBEE;
+    border-color: #D32F2F;
+}
+.feedback-admin.feedback-rojo strong {
+    color: #D32F2F;
+}
+.feedback-admin strong {
+    color: #b08100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+.feedback-admin p {
+    margin: 8px 0 0 0;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* --- Estadísticas --- */
+.mi-equipo-stats {
+    margin-bottom: 20px;
+    border-top: 1px solid #E0E0E0;
+    padding-top: 15px;
+}
+.mi-equipo-stats p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+}
+.mi-equipo-stats p strong { color: #333; }
+
+/* --- CORRECCIÓN PUNTO 1 (Botón Gris) --- */
+.card-mi-equipo .btn-primary { 
+    width: 100%; 
+    font-weight: bold;
+    /* background-color: #555; <-- ELIMINADO (para que use el azul de main.css) */
+}
+.card-mi-equipo .btn-primary:hover {
+    /* background-color: #333; <-- ELIMINADO */
 }

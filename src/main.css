@@ -1,12 +1,21 @@
-/* src/main.css */
+/* src/main.css (CORRECCIÓN DEFINITIVA) */
 /* Reseteo básico para eliminar márgenes por defecto */
-body, html, #root {
-    margin: 0; /* <-- ESTA ES LA CORRECCIÓN */
+body, html {
+    margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background-color: #f0f2f5; /* Fondo gris claro general */
     color: #333;
     min-height: 100vh;
+}
+
+/* --- ESTA ES LA CORRECCIÓN --- */
+/* Forzamos a que #root ocupe el 100% y anule cualquier otra regla */
+#root {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important; /* Anula cualquier 'max-width: 1280px' */
+    width: 100%;
 }
 
 /* Contenedor principal de contenido (el área blanca) */
@@ -27,7 +36,7 @@ body, html, #root {
     color: white;
     padding: 10px 18px;
     border: none;
-    border-radius: 6px;
+    border-radius: 6px; /* Borde estándar */
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s;

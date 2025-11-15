@@ -1,4 +1,4 @@
-// src/pages/ControlPartidoPage.tsx
+// src/pages/ControlPartidoPage.tsx (CORREGIDO)
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -6,13 +6,14 @@ import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioRegistroMarcador from '../components/FormularioRegistroMarcador';
 import type { Partido } from '../types';
-import '../main.css'; // Importamos los estilos principales
+import '../main.css'; 
 
-// Datos mock (los mismos de PanelArbitro.tsx)
+// --- CORRECCIÓN AQUÍ: Añadimos la propiedad "Deporte" al mock ---
 const mockPartidosAsignados: Partido[] = [
-    { id: 10, equipoLocal: { nombre: 'Hunters', logoUrl: '' }, equipoVisitante: { nombre: 'Astros', logoUrl: '' }, estado: 'POR INICIAR', marcadorLocal: null, marcadorVisitante: null },
-    { id: 11, equipoLocal: { nombre: 'Águilas', logoUrl: '' }, equipoVisitante: { nombre: 'Tigres', logoUrl: '' }, estado: 'EN PROCESO', marcadorLocal: 1, marcadorVisitante: 0 },
+    { id: 10, equipoLocal: { nombre: 'Hunters', logoUrl: '' }, equipoVisitante: { nombre: 'Astros', logoUrl: '' }, estado: 'POR INICIAR', marcadorLocal: null, marcadorVisitante: null, Deporte: 'FUTBOL' },
+    { id: 11, equipoLocal: { nombre: 'Águilas', logoUrl: '' }, equipoVisitante: { nombre: 'Tigres', logoUrl: '' }, estado: 'EN PROCESO', marcadorLocal: 1, marcadorVisitante: 0, Deporte: 'BALONCESTO' }, // <-- Deporte diferente
 ];
+// --- FIN DE LA CORRECCIÓN ---
 
 const ControlPartidoPage: React.FC = () => {
     const { idPartido } = useParams<{ idPartido: string }>();
@@ -20,8 +21,6 @@ const ControlPartidoPage: React.FC = () => {
     const [partido, setPartido] = useState<Partido | null>(null);
 
     useEffect(() => {
-        // En una app real, aquí harías fetch a la API con el idPartido
-        // Por ahora, lo buscamos en el mock:
         const idNum = parseInt(idPartido || '0');
         const partidoEncontrado = mockPartidosAsignados.find(p => p.id === idNum);
 
@@ -29,8 +28,6 @@ const ControlPartidoPage: React.FC = () => {
             setPartido(partidoEncontrado);
         } else {
             console.error("No se encontró el partido con ID:", idPartido);
-            // Opcional: redirigir si no se encuentra
-            // navigate('/arbitro/dashboard'); 
         }
     }, [idPartido, navigate]);
 
