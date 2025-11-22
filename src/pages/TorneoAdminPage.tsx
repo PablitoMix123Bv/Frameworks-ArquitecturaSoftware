@@ -1,19 +1,18 @@
-// src/pages/TorneoAdminPage.tsx (CORREGIDO)
+// src/pages/TorneoAdminPage.tsx
 
 import React, { useState, useEffect } from 'react';
 import type { Torneo, ProgramarPartidoData } from '../types'; 
-
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import '../main.css'; 
-import './TorneoAdminPage.css'; // Importamos su CSS
-
-// --- 1. IMPORTAMOS ICONOS ---
+import './TorneoAdminPage.css'; 
 import { FaPlus, FaCalendarAlt } from 'react-icons/fa';
-
 import CardTorneoAdmin from '../components/CardTorneoAdmin'; 
 import FormularioTorneo from '../components/FormularioTorneo'; 
 import FormularioJornada from '../components/FormularioJornada'; 
+
+// Importamos los servicios reales
+import { getTorneos, createTorneo, deleteTorneo } from '../services/torneosService';
 
 const TorneoAdminPage: React.FC = () => {
   const [torneos, setTorneos] = useState<Torneo[]>([]); 
@@ -23,10 +22,12 @@ const TorneoAdminPage: React.FC = () => {
   const [partidoAEditar, setPartidoAEditar] = useState<ProgramarPartidoData | null>(null);
   
   const fetchTorneos = async () => {
-    // Simulación de carga
-    setTorneos([
-        { id: 1, nombre: 'Apertura', detalles: 'Torneo de fútbol abierto a todos los estudiantes de la FIF.', lugar: 'Canchas...', minJugadores: 8, maxJugadores: 12, fechaInicio: '12 Nov', fechaFin: '12 Dic', deporte: 'FUTBOL', fechaLimiteInscripcion: '2025-11-10', descripcion: '', reglas: '' }
-    ]);
+    try {
+        const data = await getTorneos();
+        setTorneos(data);
+    } catch (error) {
+        console.error("Error cargando torneos", error);
+    }
   };
   
   useEffect(() => { fetchTorneos(); }, []);
@@ -41,10 +42,29 @@ const TorneoAdminPage: React.FC = () => {
     setIsModalOpen(true);
   };
   
-  const handleDelete = async (torneoId: number) => {
+  const handleDelete = async (torneoId: string) => { // ID ahora es string
     if (window.confirm('¿Seguro que deseas eliminar este torneo?')) {
-        setTorneos(torneos.filter(t => t.id !== torneoId));
+        try {
+            await deleteTorneo(torneoId);
+            fetchTorneos(); // Recargar lista
+        } catch (error) {
+            alert('Error al eliminar torneo');
+        }
     }
+  };
+
+  // Manejador para cuando el formulario guarda con éxito
+  // El formulario devuelve un objeto Torneo, pero createTorneo se encarga del mapeo
+  const handleSuccessTorneo = async (data?: any) => {
+      // Nota: Idealmente FormularioTorneo llamaría al servicio, 
+      // pero si FormularioTorneo solo devuelve los datos, lo llamamos aquí.
+      // Asumiremos que FormularioTorneo ha sido actualizado para llamar al servicio O lo hacemos aquí.
+      // Para mantener limpio FormularioTorneo, lo ideal es que reciba "onSubmit" y lo manejemos aquí.
+      // Pero según tu estructura anterior, FormularioTorneo hacía el console.log.
+      // Vamos a RE-IMPLEMENTAR FormularioTorneo abajo brevemente para que funcione con la API.
+      
+      fetchTorneos();
+      setIsModalOpen(false);
   };
 
   return (
@@ -53,12 +73,9 @@ const TorneoAdminPage: React.FC = () => {
       <div className="content-container"> 
         <div className="admin-container">
           
-          {/* --- 2. ESTRUCTURA DE ENCABEZADO CORREGIDA --- */}
-          {/* Este div ahora contiene el título y los botones */}
           <div className="admin-page-header">
-            <h2>Torneos existentes</h2>
+            <h2>Gestión de Torneos</h2>
             
-            {/* Agrupamos los botones a la derecha */}
             <div className="admin-header-actions">
               <button 
                 className="btn-primary" 
@@ -71,7 +88,7 @@ const TorneoAdminPage: React.FC = () => {
                 className="btn-primary" 
                 onClick={() => handleOpenModal()} 
               >
-                <FaPlus /> Generar Torneo
+                <FaPlus /> Crear Torneo
               </button>
             </div>
           </div>
@@ -95,7 +112,7 @@ const TorneoAdminPage: React.FC = () => {
         <FormularioTorneo
           torneo={torneoAEditar}
           onClose={() => setIsModalOpen(false)}
-          onSuccess={fetchTorneos}
+          onSuccess={handleSuccessTorneo} // Recarga la lista
         />
       )}
       

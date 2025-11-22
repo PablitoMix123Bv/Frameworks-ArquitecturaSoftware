@@ -1,41 +1,11 @@
-// src/pages/PartidosPage.tsx (CORREGIDO)
+// src/pages/PartidosPage.tsx
 import React, { useState, useEffect } from 'react';
 import type { Partido } from '../types'; 
 import CardPartido from '../components/CardPartido';
 import HeaderNav from '../components/HeaderNav'; 
 import Footer from '../components/Footer';
 import FiltroDeporte from '../components/FiltroDeporte';
-
-// --- Datos Mock (Simulación) ---
-const mockPartidos: Partido[] = [
-  {
-    id: 1,
-    equipoLocal: { nombre: 'Hunters', logoUrl: '/img/logo1.png' }, 
-    equipoVisitante: { nombre: 'Aston Birria', logoUrl: '/img/logo2.png' },
-    estado: 'EN PROCESO',
-    marcadorLocal: 0,
-    marcadorVisitante: 0,
-    Deporte: 'FUTBOL',
-  },
-  {
-    id: 2,
-    equipoLocal: { nombre: 'Castrosos', logoUrl: '/img/logo3.png' },
-    equipoVisitante: { nombre: 'Pythons', logoUrl: '/img/logo4.png' },
-    estado: 'FINALIZADO',
-    marcadorLocal: 3,
-    marcadorVisitante: 2,
-    Deporte: 'FUTBOL',
-  },
-  {
-    id: 3,
-    equipoLocal: { nombre: 'Águilas', logoUrl: '/img/logo5.png' },
-    equipoVisitante: { nombre: 'Leones', logoUrl: '/img/logo6.png' },
-    estado: 'POR INICIAR',
-    marcadorLocal: null,
-    marcadorVisitante: null,
-    Deporte: 'BALONCESTO', // Deporte diferente para probar el filtro
-  },
-];
+import { getPartidos } from '../services/partidosService.ts'; // Importar servicio
 
 const PartidosPage: React.FC = () => {
   
@@ -44,26 +14,23 @@ const PartidosPage: React.FC = () => {
   const [deporteSeleccionado, setDeporteSeleccionado] = useState('TODOS');
 
   useEffect(() => {
-    // Simulación de la carga de la API
-    setTimeout(() => {
-      setPartidos(mockPartidos); 
-      setIsLoading(false);
-    }, 500);
+    const fetchData = async () => {
+        try {
+            const data = await getPartidos();
+            setPartidos(data);
+        } catch (error) {
+            console.error("Error al cargar partidos", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    fetchData();
   }, []); 
 
-  // --- INICIO DE LA CORRECCIÓN ---
-  // Lógica para filtrar los partidos basada en el estado 'deporteSeleccionado'
   const partidosFiltrados = partidos.filter(partido => {
-    // Si el filtro es 'TODOS', muestra todos los partidos
-    if (deporteSeleccionado === 'TODOS') {
-      return true;
-    }
-    // Compara el deporte del partido (en mayúsculas) con el filtro
-    // Asumimos que el filtro también viene en mayúsculas (como en FiltroDeporte.tsx)
+    if (deporteSeleccionado === 'TODOS') return true;
     return partido.Deporte.toUpperCase() === deporteSeleccionado;
   });
-  // --- FIN DE LA CORRECCIÓN ---
-
   
   return (
     <div>
@@ -77,24 +44,20 @@ const PartidosPage: React.FC = () => {
         
         <h2>Listado de Partidos</h2>
         
-        {isLoading && <p>Cargando partidos...</p>}
-        
-        <div className="partidos-list">
-          
-          {/* CORRECCIÓN: Usamos 'partidosFiltrados' en lugar de 'partidos' */}
-          {partidosFiltrados.length > 0 ? (
-            partidosFiltrados.map((partido) => (
-              <CardPartido 
-                key={partido.id} 
-                partido={partido}
-              />
-            ))
-          ) : (
-            // Mensaje si no hay partidos para ese filtro
-            <p>No hay partidos programados para el deporte seleccionado.</p>
-          )}
-
-        </div>
+        {isLoading ? <p>Cargando partidos...</p> : (
+            <div className="partidos-list">
+            {partidosFiltrados.length > 0 ? (
+                partidosFiltrados.map((partido) => (
+                <CardPartido 
+                    key={partido.id} 
+                    partido={partido}
+                />
+                ))
+            ) : (
+                <p>No hay partidos programados para el deporte seleccionado.</p>
+            )}
+            </div>
+        )}
       </div>
       <Footer/>
     </div>

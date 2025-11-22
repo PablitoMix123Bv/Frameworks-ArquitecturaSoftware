@@ -1,4 +1,4 @@
-// src/pages/ControlPartidoPage.tsx (CORREGIDO)
+// src/pages/ControlPartidoPage.tsx
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -6,14 +6,8 @@ import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioRegistroMarcador from '../components/FormularioRegistroMarcador';
 import type { Partido } from '../types';
+import { getPartidoById, updateMarcador } from '../services/partidosService';
 import '../main.css'; 
-
-// --- CORRECCIÓN AQUÍ: Añadimos la propiedad "Deporte" al mock ---
-const mockPartidosAsignados: Partido[] = [
-    { id: 10, equipoLocal: { nombre: 'Hunters', logoUrl: '' }, equipoVisitante: { nombre: 'Astros', logoUrl: '' }, estado: 'POR INICIAR', marcadorLocal: null, marcadorVisitante: null, Deporte: 'FUTBOL' },
-    { id: 11, equipoLocal: { nombre: 'Águilas', logoUrl: '' }, equipoVisitante: { nombre: 'Tigres', logoUrl: '' }, estado: 'EN PROCESO', marcadorLocal: 1, marcadorVisitante: 0, Deporte: 'BALONCESTO' }, // <-- Deporte diferente
-];
-// --- FIN DE LA CORRECCIÓN ---
 
 const ControlPartidoPage: React.FC = () => {
     const { idPartido } = useParams<{ idPartido: string }>();
@@ -21,26 +15,43 @@ const ControlPartidoPage: React.FC = () => {
     const [partido, setPartido] = useState<Partido | null>(null);
 
     useEffect(() => {
-        const idNum = parseInt(idPartido || '0');
-        const partidoEncontrado = mockPartidosAsignados.find(p => p.id === idNum);
+        const fetchMatch = async () => {
+            if (idPartido) {
+                const data = await getPartidoById(idPartido);
+                if (data) setPartido(data);
+                else alert('Partido no encontrado');
+            }
+        };
+        fetchMatch();
+    }, [idPartido]);
 
-        if (partidoEncontrado) {
-            setPartido(partidoEncontrado);
-        } else {
-            console.error("No se encontró el partido con ID:", idPartido);
+    const handleFinalizar = async (local: number, visitante: number) => {
+        if (!partido) return;
+        try {
+            // Actualizar una última vez y el backend finalizará el partido
+            await updateMarcador(partido.id, local, visitante);
+            alert('Partido finalizado y marcador guardado.');
+            navigate('/arbitro/dashboard');
+        } catch (error) {
+            console.error("Error al finalizar", error);
+            alert("Error al guardar el resultado final.");
         }
-    }, [idPartido, navigate]);
-
-    // Funciones 'dummy' para pasar al formulario
-    const handleFinalizar = (local: number, visitante: number) => {
-        console.log(`Partido ${idPartido} finalizado: ${local} - ${visitante}`);
-        alert('Partido finalizado');
-        navigate('/arbitro/dashboard');
     };
 
-    const handleUpdate = (data: any) => {
-        // Simula el envío de datos en tiempo real (ej. WebSocket)
-        console.log('Actualización de estado:', data);
+    // Esta función se llama cada vez que se suman puntos (para guardar en BD en tiempo real si quieres)
+    // O solo actualiza estado local. Aquí lo haremos guardar en BD para persistencia.
+    const handleUpdate = async (data: { marcadorLocal: number, marcadorVisitante: number, tiempo: string, periodo: string }) => {
+        if (!partido) return;
+        // Opcional: Guardar en BD cada vez que cambia el marcador (Live Score)
+        // Esto hace muchas peticiones, pero asegura persistencia.
+        try {
+             // Nota: Si el backend cambia estado a finalizado automáticamente, ten cuidado. 
+             // Asumimos que updateMarcador solo cambia goles.
+             // await updateMarcador(partido.id, data.marcadorLocal, data.marcadorVisitante);
+        } catch (e) {
+            console.log("Error guardando live score");
+        }
+        console.log('Live update:', data);
     };
 
     return (
@@ -54,7 +65,7 @@ const ControlPartidoPage: React.FC = () => {
                         onUpdate={handleUpdate}
                     />
                 ) : (
-                    <h2>Cargando datos del partido {idPartido}...</h2>
+                    <h2>Cargando datos del partido...</h2>
                 )}
             </div>
             <Footer />

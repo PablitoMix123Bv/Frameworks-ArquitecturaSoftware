@@ -1,27 +1,40 @@
-// src/pages/InscripcionesPage.tsx (CORREGIDO)
+// src/pages/InscripcionesPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioInscripcion from '../components/FormularioInscripcion'; 
-import type { Torneo, SolicitudInscripcion } from '../types';
+import type { Torneo, SolicitudInscripcion, Equipo } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { getTorneos } from '../services/torneosService';
+import { getMiEquipo, crearEquipo, inscribirEquipoEnTorneo } from '../services/inscripcionesService';
 import './InscripcionesPage.css'; 
 
-// (Los mocks se quedan igual)
-const mockTorneosDisponibles: Torneo[] = [
-    { id: 101, nombre: 'Torneo de Voleibol Apertura', deporte: 'VOLEIBOL', minJugadores: 6, maxJugadores: 10, fechaLimiteInscripcion: '2025-11-20', detalles: '', lugar: '', fechaInicio: '', fechaFin: '', reglas: '', descripcion: '' },
-    { id: 102, nombre: 'Liga de Fútbol Rápido', deporte: 'FUTBOL', minJugadores: 7, maxJugadores: 12, fechaLimiteInscripcion: '2025-11-25', detalles: '', lugar: '', fechaInicio: '', fechaFin: '', reglas: '', descripcion: '' },
-];
-
 const InscripcionesPage: React.FC = () => {
+    const [torneosDisponibles, setTorneosDisponibles] = useState<Torneo[]>([]);
     const [torneoSeleccionado, setTorneoSeleccionado] = useState<Torneo | null>(null);
+    const [miEquipo, setMiEquipo] = useState<Equipo | undefined>(undefined); 
+    
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
     
-    // Solo permitimos inscribir si es jugador (capitán)
-    const puedeInscribir = isLoggedIn && user?.rol === 'jugador';
+    // Lógica de seguridad: Solo el Capitán puede ver el botón activo.
+    const esCapitan = isLoggedIn && user?.rol === 'capitan';
+
+    useEffect(() => {
+        const initData = async () => {
+            const torneos = await getTorneos();
+            setTorneosDisponibles(torneos);
+
+            // Solo cargamos el equipo si el usuario es capitán
+            if (isLoggedIn && user && user.rol === 'capitan') {
+                const equipo = await getMiEquipo(user.id);
+                setMiEquipo(equipo || undefined);
+            }
+        };
+        initData();
+    }, [isLoggedIn, user]);
 
     const handleInscribirClick = (torneo: Torneo) => {
         setTorneoSeleccionado(torneo);
@@ -31,10 +44,34 @@ const InscripcionesPage: React.FC = () => {
         setTorneoSeleccionado(null);
     };
 
-    const handleSuccess = (solicitud: SolicitudInscripcion) => {
-        handleCloseModal();
-        // Opcional: Redirigir al dashboard del equipo
-        navigate('/perfil/mi-equipo');
+    const handleProcessInscripcion = async (solicitud: SolicitudInscripcion) => {
+        if (!torneoSeleccionado || !user) return;
+
+        try {
+            let idEquipoAInscribir = '';
+
+            if (miEquipo && miEquipo.id) {
+                idEquipoAInscribir = miEquipo.id;
+            } else {
+                const nombresJugadores = solicitud.integrantes.map(j => j.nombre);
+                const nuevoEquipo = await crearEquipo(
+                    solicitud.nombreEquipo, 
+                    nombresJugadores, 
+                    solicitud.logoUrl 
+                );
+                idEquipoAInscribir = nuevoEquipo.id;
+            }
+
+            await inscribirEquipoEnTorneo(idEquipoAInscribir, torneoSeleccionado.id);
+
+            alert('¡Inscripción realizada con éxito!');
+            handleCloseModal();
+            navigate('/perfil/mi-equipo');
+
+        } catch (error: any) {
+            console.error("Error en inscripción:", error);
+            alert('Error al procesar: ' + (error.response?.data?.message || error.message));
+        }
     };
 
     return (
@@ -43,28 +80,31 @@ const InscripcionesPage: React.FC = () => {
             <div className="content-container">
                 <h2>Torneos Abiertos a Inscripción</h2>
                 
-                {mockTorneosDisponibles.map(torneo => (
+                {torneosDisponibles.length === 0 && <p>Cargando torneos disponibles...</p>}
+
+                {torneosDisponibles.map(torneo => (
                     <div key={torneo.id} className="card-inscripcion-torneo">
                         <div className="torneo-info">
                             <h3>{torneo.nombre} ({torneo.deporte})</h3>
-                            <p><strong>Límite de Inscripción:</strong> {torneo.fechaLimiteInscripcion}</p>
-                            <p><strong>Mínimo de jugadores:</strong> {torneo.minJugadores}</p>
-                            <p><strong>Máximo de jugadores:</strong> {torneo.maxJugadores}</p>
+                            <p><strong>Límite:</strong> {torneo.fechaLimiteInscripcion}</p>
+                            <p><strong>Jugadores:</strong> Min {torneo.minJugadores} - Max {torneo.maxJugadores}</p>
                         </div>
                         <div className="torneo-actions">
-                            {puedeInscribir ? (
+                            {/* Renderizado condicional estricto para Capitanes */}
+                            {esCapitan ? (
                                 <button 
                                     className="btn-primary" 
                                     onClick={() => handleInscribirClick(torneo)}
                                 >
-                                    Inscribir Equipo
+                                    {miEquipo ? 'Inscribir Mi Equipo' : 'Crear Equipo e Inscribir'}
                                 </button>
                             ) : (
                                 <button 
                                     className="btn-primary disabled"
-                                    onClick={() => navigate('/login')}
+                                    onClick={() => !isLoggedIn && navigate('/login')}
+                                    disabled={isLoggedIn && !esCapitan}
                                 >
-                                    Iniciar Sesión para Inscribir
+                                    {isLoggedIn ? 'Solo Capitanes' : 'Inicia Sesión para Inscribir'}
                                 </button>
                             )}
                         </div>
@@ -76,10 +116,9 @@ const InscripcionesPage: React.FC = () => {
             {torneoSeleccionado && (
                 <FormularioInscripcion
                     torneo={torneoSeleccionado}
-                    // --- 1. PASAMOS 'undefined' AQUI ---
-                    equipoAEditar={undefined} 
+                    equipoAEditar={miEquipo} 
                     onClose={handleCloseModal}
-                    onSuccess={handleSuccess}
+                    onSuccess={handleProcessInscripcion}
                 />
             )}
         </div>

@@ -1,117 +1,60 @@
-// src/pages/MiEquipoDashboard.tsx (CORREGIDO)
+// src/pages/MiEquipoDashboard.tsx
 
 import React, { useEffect, useState } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioInscripcion from '../components/FormularioInscripcion';
-import type { Equipo, SolicitudInscripcion, Torneo } from '../types'; 
+import type { Equipo, Torneo } from '../types'; 
 import { useNavigate } from 'react-router-dom';
 import FormularioRoster from '../components/FormularioRoster';
 import './MiEquipoDashboard.css'; 
 import { FaPencilAlt, FaCommentDots, FaTimesCircle, FaCheckCircle } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
+import { getMisEquipos } from '../services/inscripcionesService';
 
-// (Simulamos un objeto Torneo para pasarlo al modal)
-const mockTorneo: Torneo = {
-    id: 101,
-    nombre: 'Torneo de Voleibol Apertura',
-    deporte: 'VOLEIBOL',
-    minJugadores: 6,
-    maxJugadores: 10,
-    fechaLimiteInscripcion: '2025-11-20',
-} as Torneo;
-
-
-// (La estructura del Mock se queda igual)
 interface MiEquipoInfo {
   equipo: Equipo;
-  rolUsuario: 'Capitán' | 'Jugador';
+  rolUsuario: string;
   solicitud: {
-    idTorneo: number; 
-    estado: 'Aprobado' | 'Pendiente' | 'RequiereCambios' | 'Rechazado';
+    idTorneo: string; 
+    estado: 'Aprobado' | 'Pendiente' | 'RequiereCambios' | 'Rechazado' | null;
     motivo?: string | null; 
   }
 }
 
-const mockMisEquipos: MiEquipoInfo[] = [
-    { 
-      equipo: { 
-        id: 1, nombre: 'Hunters', logoUrl: '/img/hunters.png', facultad: 'Ingeniería', 
-        victorias: 5, derrotas: 1, empates: 2, puntos: 17, jugadores: ['Juan P. (Capitán)', 'Ana L.', 'Carlos M.'],
-        deporte: 'FÚTBOL', minJugadores: 8, maxJugadores: 12, reglas: 'Reglas estándar.'
-      },
-      rolUsuario: 'Capitán',
-      solicitud: { idTorneo: 100, estado: 'Aprobado', motivo: null }
-    },
-    { 
-      equipo: { 
-        id: 6, nombre: 'Los Nuevos', logoUrl: '/img/logo_placeholder.png', facultad: 'Ingeniería', 
-        victorias: 0, derrotas: 0, empates: 0, puntos: 0, jugadores: ['Juan P. (Capitán)'],
-        deporte: 'VOLEIBOL', minJugadores: 6, maxJugadores: 10, reglas: 'N/A'
-      },
-      rolUsuario: 'Capitán',
-      solicitud: { idTorneo: 101, estado: 'RequiereCambios', motivo: 'El nombre del equipo ("Los Nuevos") no es apropiado. Por favor, cámbialo.' }
-    },
-    { 
-      equipo: { 
-        id: 7, nombre: 'Equipo Fantasma', logoUrl: '/img/logo_placeholder.png', facultad: 'Ingeniería', 
-        victorias: 0, derrotas: 0, empates: 0, puntos: 0, jugadores: ['Jugador Falso 1'],
-        deporte: 'FÚTBOL', minJugadores: 8, maxJugadores: 12, reglas: 'N/A'
-      },
-      rolUsuario: 'Capitán',
-      solicitud: { 
-        idTorneo: 102, // <-- CORRECCIÓN AQUÍ
-        estado: 'Rechazado', 
-        motivo: 'Jugadores no válidos. Inscripción denegada.' 
-      }
-    },
-];
-
-
 const MiEquipoDashboard: React.FC = () => {
+    const { user } = useAuth();
     const [misEquipos, setMisEquipos] = useState<MiEquipoInfo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    
     const [equipoGestionRoster, setEquipoGestionRoster] = useState<Equipo | null>(null);
-    const [equipoAEditar, setEquipoAEditar] = useState<Equipo | null>(null);
-    const navigate = useNavigate(); 
+    // El formulario de edición requiere un Torneo completo, por simplicidad, aquí solo editaremos datos básicos si es necesario
+    // o lo omitimos si la lógica de "editar solicitud" es compleja.
+    const [equipoAEditar, setEquipoAEditar] = useState<Equipo | null>(null); 
 
     useEffect(() => {
-        setTimeout(() => {
-            setMisEquipos(mockMisEquipos); 
+        const fetchData = async () => {
+            if (user) {
+                const data = await getMisEquipos(user.id);
+                setMisEquipos(data);
+            }
             setIsLoading(false);
-        }, 500);
-    }, []); 
+        };
+        fetchData();
+    }, [user]);
 
     const handleCerrarModalRoster = () => setEquipoGestionRoster(null);
-    
-    const handleEditarSolicitud = (equipo: Equipo) => {
-        setEquipoAEditar(equipo); 
-    };
-
-    const handleCerrarModalEdicion = () => {
-        setEquipoAEditar(null);
-    };
+    const handleCerrarModalEdicion = () => setEquipoAEditar(null);
 
     const renderEstadoInscripcion = (item: MiEquipoInfo) => {
-        const { estado, motivo } = item.solicitud;
+        const { estado } = item.solicitud;
+        if (!estado) return <div className="estado-tag">Sin Inscripción</div>;
+
         switch (estado) {
             case 'Aprobado':
                 return <div className="estado-tag aprobado"><FaCheckCircle /> Aprobado</div>;
             case 'Pendiente':
                 return <div className="estado-tag pendiente">⏳ Pendiente</div>;
-            case 'RequiereCambios':
-                return (
-                    <div className="estado-tag requiere-cambios"> 
-                        <span><FaCommentDots /> Requiere Cambios</span>
-                        {item.rolUsuario === 'Capitán' && (
-                            <button 
-                                className="btn-editar-solicitud" 
-                                onClick={() => handleEditarSolicitud(item.equipo)} 
-                            >
-                                <FaPencilAlt /> Editar Solicitud
-                            </button>
-                        )}
-                    </div>
-                );
             case 'Rechazado':
                 return (
                     <div className="estado-tag rechazado-definitivo"> 
@@ -122,7 +65,6 @@ const MiEquipoDashboard: React.FC = () => {
                 return null;
         }
     };
-
 
     return (
         <div>
@@ -152,7 +94,7 @@ const MiEquipoDashboard: React.FC = () => {
                             
                             {item.solicitud.motivo && (
                                 <div className={`feedback-admin ${item.solicitud.estado === 'Rechazado' ? 'feedback-rojo' : ''}`}>
-                                    <strong><FaCommentDots /> Revisión del Admin:</strong>
+                                    <strong><FaCommentDots /> Mensaje del Admin:</strong>
                                     <p>{item.solicitud.motivo}</p>
                                 </div>
                             )}
@@ -160,41 +102,26 @@ const MiEquipoDashboard: React.FC = () => {
                             <div className="mi-equipo-stats">
                                 <p><strong>Victorias:</strong> {item.equipo.victorias}</p>
                                 <p><strong>Derrotas:</strong> {item.equipo.derrotas}</p>
-                                <p><strong>Empates:</strong> {item.equipo.empates}</p>
                                 <p><strong>Puntos:</strong> {item.equipo.puntos}</p>
-                                <p><strong>Jugadores:</strong> {item.equipo.jugadores.length} / {item.equipo.maxJugadores || 'N/A'}</p>
+                                <p><strong>Jugadores:</strong> {item.equipo.jugadores.length} {item.equipo.maxJugadores ? `/ ${item.equipo.maxJugadores}` : ''}</p>
                             </div>
                             
-                            {item.rolUsuario === 'Capitán' && (
-                                <button 
-                                    className="btn-primary" 
-                                    onClick={() => setEquipoGestionRoster(item.equipo)}
-                                >
-                                    Administrar Jugadores
-                                </button>
-                            )}
+                            <button 
+                                className="btn-primary" 
+                                onClick={() => setEquipoGestionRoster(item.equipo)}
+                            >
+                                Ver Roster
+                            </button>
                         </div>
                     ))}
                 </div>
             </div>
             <Footer />
 
-            {/* Modal de Roster */}
             {equipoGestionRoster && (
                 <FormularioRoster
                     equipo={equipoGestionRoster}
                     onClose={handleCerrarModalRoster}
-                />
-            )}
-
-            {/* Modal de Edición */}
-            {equipoAEditar && (
-                <FormularioInscripcion
-                    // Usamos el mockTorneo (en una app real, buscarías el torneo por ID)
-                    torneo={mockTorneo} 
-                    equipoAEditar={equipoAEditar}
-                    onClose={handleCerrarModalEdicion}
-                    onSuccess={handleCerrarModalEdicion} 
                 />
             )}
         </div>
