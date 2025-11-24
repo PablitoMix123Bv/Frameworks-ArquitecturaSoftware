@@ -1,93 +1,74 @@
-// src/services/partidosService.ts
 import api from '../api/axios';
 import type { Partido } from '../types';
 
-// Función auxiliar para determinar estado (si el backend devuelve algo distinto)
-const mapEstado = (estadoBackend: string): any => {
-    // Aseguramos compatibilidad con los estados del frontend
-    const est = estadoBackend.toUpperCase();
-    if (['FINALIZADO', 'EN PROCESO', 'POR INICIAR', 'CANCELADO'].includes(est)) {
-        return est;
-    }
-    return 'POR INICIAR'; // Default
+// 1. Esta es la misma lógica que usa equiposService
+const getLogoUrl = (logoUrl?: string) => {
+    if (!logoUrl) return '/img/logo_placeholder.png';
+    
+    // Si ya es web, se deja
+    if (logoUrl.startsWith('http')) return logoUrl;
+    
+    // Construimos la URL apuntando a la carpeta que me mostraste en la captura
+    // Puerto 3001, carpeta uploads/equipos/
+    return `http://localhost:3001/uploads/equipos/${logoUrl}`;
+};
+
+const mapPartidoBackend = (p: any): Partido => {
+    // Verificamos si los equipos vienen en el array
+    const e1 = p.equipos && p.equipos[0] ? p.equipos[0] : null;
+    const e2 = p.equipos && p.equipos[1] ? p.equipos[1] : null;
+
+    // Debug: Ver en consola qué nombres de archivo estamos recibiendo
+    // Presiona F12 en el navegador para ver esto
+    if (e1) console.log(`Equipo 1 (${e1.nombre}) imagen cruda:`, e1.logoUrl);
+    if (e2) console.log(`Equipo 2 (${e2.nombre}) imagen cruda:`, e2.logoUrl);
+
+    return {
+        id: p.idPartido,
+        equipoLocal: { 
+            nombre: e1 ? e1.nombre : 'Por Definir', 
+            // Aquí aplicamos la transformación
+            logoUrl: e1 ? getLogoUrl(e1.logoUrl) : '/img/logo_placeholder.png'
+        },
+        equipoVisitante: { 
+            nombre: e2 ? e2.nombre : 'Por Definir', 
+            logoUrl: e2 ? getLogoUrl(e2.logoUrl) : '/img/logo_placeholder.png'
+        },
+        estado: p.estado,
+        marcadorLocal: p.golesEquipo1,
+        marcadorVisitante: p.golesEquipo2,
+        Deporte: p.jornada?.torneo?.nombreDeporte || 'General',
+        fechaInicio: p.fechaInicio,
+        lugar: p.lugar
+    };
 };
 
 export const getPartidos = async (): Promise<Partido[]> => {
     const { data } = await api.get<any[]>('/partidos');
-
-    return data.map(p => {
-        // Intentamos obtener el deporte desde la jornada -> torneo
-        const deporte = p.jornada?.torneo?.nombreDeporte || 'GENERAL';
-
-        // Mapeo de equipos (El backend devuelve array 'equipos' dentro del partido)
-        // Asumimos que equipos[0] es local y equipos[1] es visitante
-        const equipoLocal = p.equipos && p.equipos[0] 
-            ? { nombre: p.equipos[0].nombre, logoUrl: p.equipos[0].logo || '/img/logo_placeholder.png' }
-            : { nombre: 'TBD', logoUrl: '/img/logo_placeholder.png' };
-
-        const equipoVisitante = p.equipos && p.equipos[1] 
-            ? { nombre: p.equipos[1].nombre, logoUrl: p.equipos[1].logo || '/img/logo_placeholder.png' }
-            : { nombre: 'TBD', logoUrl: '/img/logo_placeholder.png' };
-        
-        // Si el logo viene solo como nombre de archivo, pegarle la url
-        if (equipoLocal.logoUrl !== '/img/logo_placeholder.png' && !equipoLocal.logoUrl.startsWith('http')) {
-             equipoLocal.logoUrl = `http://localhost:3000/uploads/equipos/${equipoLocal.logoUrl}`;
-        }
-        if (equipoVisitante.logoUrl !== '/img/logo_placeholder.png' && !equipoVisitante.logoUrl.startsWith('http')) {
-             equipoVisitante.logoUrl = `http://localhost:3000/uploads/equipos/${equipoVisitante.logoUrl}`;
-        }
-
-        return {
-            id: p.idPartido,
-            equipoLocal,
-            equipoVisitante,
-            estado: mapEstado(p.estado),
-            marcadorLocal: p.golesEquipo1,
-            marcadorVisitante: p.golesEquipo2,
-            Deporte: deporte,
-            fechaInicio: p.fechaInicio,
-            lugar: p.lugar
-        };
-    });
+    return data.map(mapPartidoBackend);
 };
 
-// Obtener un partido por ID
 export const getPartidoById = async (id: string): Promise<Partido | null> => {
     try {
         const { data } = await api.get(`/partidos/${id}`);
-        
-        // Mapeo similar a getPartidos
-        const p = data;
-        const deporte = p.jornada?.torneo?.nombreDeporte || 'GENERAL';
-        
-        // Manejo seguro de equipos (en caso de null)
-        const equipoLocal = p.equipos && p.equipos[0] 
-            ? { nombre: p.equipos[0].nombre, logoUrl: p.equipos[0].logoUrl ? `http://localhost:3000/uploads/equipos/${p.equipos[0].logoUrl}` : '/img/logo_placeholder.png' }
-            : { nombre: 'TBD', logoUrl: '' };
-        const equipoVisitante = p.equipos && p.equipos[1] 
-            ? { nombre: p.equipos[1].nombre, logoUrl: p.equipos[1].logoUrl ? `http://localhost:3000/uploads/equipos/${p.equipos[1].logoUrl}` : '/img/logo_placeholder.png' }
-            : { nombre: 'TBD', logoUrl: '' };
-
-        return {
-            id: p.idPartido,
-            equipoLocal,
-            equipoVisitante,
-            estado: p.estado.toUpperCase(), // Asegurar mayúsculas
-            marcadorLocal: p.golesEquipo1,
-            marcadorVisitante: p.golesEquipo2,
-            Deporte: deporte,
-            fechaInicio: p.fechaInicio,
-            lugar: p.lugar
-        };
+        return mapPartidoBackend(data);
     } catch (error) {
-        console.error("Error obteniendo partido", error);
+        console.error(error);
         return null;
     }
 };
 
-// Actualizar marcador
+export const iniciarPartido = async (id: string) => {
+    const { data } = await api.patch(`/partidos/${id}/iniciar`);
+    return data;
+};
+
+export const finalizarPartido = async (id: string) => {
+    const { data } = await api.patch(`/partidos/${id}/finalizar`);
+    return data;
+};
+
 export const updateMarcador = async (id: string, golesLocal: number, golesVisitante: number) => {
-    // Endpoint: PATCH /partidos/:id/marcador
     const { data } = await api.patch(`/partidos/${id}/marcador`, {
         golesEquipo1: golesLocal,
         golesEquipo2: golesVisitante

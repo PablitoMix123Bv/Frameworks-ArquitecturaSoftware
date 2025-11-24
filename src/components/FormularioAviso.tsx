@@ -1,52 +1,62 @@
-// src/components/FormularioAviso.tsx
-
-import React, { useState } from 'react';
-import type { FormularioAvisoProps, CategoriaAviso, PrioridadAviso } from '../types'; 
+import React, { useState, useEffect } from 'react';
+import type { FormularioAvisoProps, CategoriaAviso, PrioridadAviso, Torneo } from '../types'; 
+import { getTorneos } from '../services/torneosService';
+import { createAviso, updateAviso } from '../services/avisosService'; // Asegúrate de tener updateAviso exportado
 import './FormularioAviso.css';
-// Asumimos que los estilos de modal están disponibles
-
-const mockTorneos = [{ id: 101, nombre: 'Fútbol Apertura' }, { id: 102, nombre: 'Baloncesto Relámpago' }];
 
 const initialAvisoState = (aviso: FormularioAvisoProps['avisoAEditar']) => ({
   titulo: aviso?.titulo || '',
   contenido: aviso?.contenido || '',
   categoria: aviso?.categoria || 'GENERAL' as CategoriaAviso,
   prioridad: aviso?.prioridad || 'NORMAL' as PrioridadAviso,
-  idTorneoAsociado: aviso?.idTorneoAsociado || null,
+  idTorneoAsociado: aviso?.idTorneoAsociado || '',
 });
 
 const FormularioAviso: React.FC<FormularioAvisoProps> = ({ avisoAEditar, onClose, onSuccess }) => {
   
   const [formData, setFormData] = useState(initialAvisoState(avisoAEditar));
+  const [torneos, setTorneos] = useState<Torneo[]>([]);
   const isEditing = !!avisoAEditar; 
+
+  // Cargar torneos reales
+  useEffect(() => {
+    const fetchTorneos = async () => {
+        try {
+            const data = await getTorneos();
+            setTorneos(data);
+        } catch (error) {
+            console.error("Error al cargar torneos", error);
+        }
+    };
+    fetchTorneos();
+  }, []);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Manejar el ID de torneo (número o null)
-    let newValue: string | number | null = value;
-    if (name === 'idTorneoAsociado') {
-        newValue = value === '' ? null : parseInt(value);
-    }
-
-    setFormData(prevData => ({ ...prevData, [name]: newValue as any }));
+    setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validaciones de frontend
     if (formData.categoria === 'TORNEO' && !formData.idTorneoAsociado) {
         alert('Error: Un aviso de TORNEO debe estar asociado a un torneo.');
         return;
     }
 
-    // Lógica de POST o PUT a la API (simulación)
-    console.log('Aviso Guardado/Publicado:', formData);
-    alert(`Aviso ${isEditing ? 'actualizado' : 'creado'} con éxito.`);
-
-    onSuccess();
-    onClose();
+    try {
+        if (isEditing && avisoAEditar) {
+            await updateAviso(avisoAEditar.id, formData);
+        } else {
+            await createAviso(formData);
+        }
+        alert(`Aviso ${isEditing ? 'actualizado' : 'creado'} con éxito.`);
+        onSuccess();
+        onClose();
+    } catch (error) {
+        console.error(error);
+        alert('Error al guardar el aviso.');
+    }
   };
   
   return (
@@ -58,19 +68,16 @@ const FormularioAviso: React.FC<FormularioAvisoProps> = ({ avisoAEditar, onClose
         
         <form onSubmit={handleSubmit}>
           
-          {/* Título del Aviso */}
           <div className="form-group">
             <label htmlFor="titulo">Título</label>
             <input type="text" id="titulo" name="titulo" value={formData.titulo} onChange={handleChange} required />
           </div>
 
-          {/* Contenido/Cuerpo del Aviso */}
           <div className="form-group">
             <label htmlFor="contenido">Contenido / Detalles</label>
             <textarea id="contenido" name="contenido" rows={4} value={formData.contenido} onChange={handleChange} required />
           </div>
           
-          {/* Categoría y Prioridad */}
           <div className="form-group-row">
             <div className="form-group half">
               <label htmlFor="categoria">Categoría</label>
@@ -89,12 +96,11 @@ const FormularioAviso: React.FC<FormularioAvisoProps> = ({ avisoAEditar, onClose
             </div>
           </div>
           
-          {/* Asociación a Torneo (Condicional) */}
           <div className="form-group">
             <label htmlFor="idTorneoAsociado">Asociar a Torneo (Opcional)</label>
             <select id="idTorneoAsociado" name="idTorneoAsociado" value={formData.idTorneoAsociado || ''} onChange={handleChange}>
               <option value="">Ninguno (Aviso General)</option>
-              {mockTorneos.map(torneo => (
+              {torneos.map(torneo => (
                 <option key={torneo.id} value={torneo.id}>{torneo.nombre}</option>
               ))}
             </select>

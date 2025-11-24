@@ -41,7 +41,7 @@ const TablaClasificacion: React.FC<TablaClasificacionProps> = ({ deporte, idTorn
             
             <table>
                 <thead>
-                                        <tr>
+                    <tr>
                         <th>#</th>
                         <th>Equipo</th>
                         <th>Jugados</th>

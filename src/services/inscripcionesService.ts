@@ -1,40 +1,43 @@
 // src/services/inscripcionesService.ts
 import api from '../api/axios';
-import type { Equipo, SolicitudInscripcion } from '../types';
+import type { Equipo } from '../types';
 
-// Inscribir equipo existente
+// --- Lógica del Capitán (Ya existente) ---
 export const inscribirEquipoEnTorneo = async (equipoId: string, torneoId: string) => {
     const { data } = await api.post('/inscripciones', { equipoId, torneoId });
     return data;
 };
 
-// Crear equipo nuevo
 export const crearEquipo = async (nombre: string, jugadores: string[], logoUrl?: string) => {
     const { data } = await api.post('/equipos', { nombre, jugadores, logoUrl });
     return data;
 };
 
-// NUEVO: Obtener TODOS los equipos del capitán con sus inscripciones
+export const getMiEquipo = async (userId: string): Promise<Equipo | null> => {
+    try {
+        const equipos = await getMisEquipos(userId);
+        return equipos.length > 0 ? equipos[0].equipo : null;
+    } catch (error) {
+        return null;
+    }
+};
+
 export const getMisEquipos = async (userId: string): Promise<any[]> => {
     try {
         const { data } = await api.get<any[]>('/equipos');
-        
-        // Filtramos los equipos donde el usuario es capitán
         const misEquiposBackend = data.filter((e: any) => e.capitan && e.capitan.id === userId);
 
-        // Mapeamos para incluir la info de inscripción (si existe)
         return misEquiposBackend.map((miEquipo) => {
-            // Buscamos la inscripción más reciente o relevante
             const inscripcion = miEquipo.inscripciones && miEquipo.inscripciones.length > 0 
-                ? miEquipo.inscripciones[0] // Tomamos la primera por simplicidad
-                : null;
+                ? miEquipo.inscripciones[0] : null;
 
             return {
                 equipo: {
                     id: miEquipo.id,
                     nombre: miEquipo.nombre,
+                    // Lógica de logo segura
                     logoUrl: miEquipo.logoUrl 
-                        ? (miEquipo.logoUrl.startsWith('http') ? miEquipo.logoUrl : `http://localhost:3000/uploads/equipos/${miEquipo.logoUrl}`)
+                        ? (miEquipo.logoUrl.startsWith('http') ? miEquipo.logoUrl : `http://localhost:3001/uploads/equipos/${miEquipo.logoUrl}`)
                         : '/img/logo_placeholder.png',
                     facultad: 'Ingeniería',
                     victorias: miEquipo.victorias,
@@ -48,8 +51,7 @@ export const getMisEquipos = async (userId: string): Promise<any[]> => {
                 rolUsuario: 'Capitán',
                 solicitud: {
                     idTorneo: inscripcion?.torneo?.idTorneo,
-                    // Mapeamos el estado del backend al del frontend
-                    estado: mapEstadoInscripcion(inscripcion?.estado), 
+                    estado: inscripcion?.estado === 'APROBADO' ? 'Aprobado' : (inscripcion?.estado === 'RECHAZADO' ? 'Rechazado' : 'Pendiente'), 
                     motivo: inscripcion?.comentarios || null
                 }
             };
@@ -60,17 +62,33 @@ export const getMisEquipos = async (userId: string): Promise<any[]> => {
     }
 };
 
-// Función auxiliar para traducir estados
-const mapEstadoInscripcion = (estado: string) => {
-    if (!estado) return null;
-    if (estado === 'APROBADO') return 'Aprobado';
-    if (estado === 'PENDIENTE') return 'Pendiente';
-    if (estado === 'RECHAZADO') return 'Rechazado';
-    return 'Pendiente';
+// --- NUEVA LÓGICA PARA EL ADMINISTRADOR ---
+
+// 1. Obtener TODAS las inscripciones (para que el admin las revise)
+export const getTodasInscripciones = async () => {
+    const { data } = await api.get<any[]>('/inscripciones');
+    
+    // Mapeamos la respuesta cruda a un formato útil para la tabla
+    return data.map(ins => ({
+        id: ins.id, // ID de la inscripción
+        torneo: ins.torneo?.nombreTorneo || 'Torneo Desconocido',
+        deporte: ins.torneo?.nombreDeporte || 'General',
+        equipo: ins.equipo?.nombre || 'Sin nombre',
+        logoUrl: ins.equipo?.logoUrl 
+            ? (ins.equipo.logoUrl.startsWith('http') ? ins.equipo.logoUrl : `http://localhost:3001/uploads/equipos/${ins.equipo.logoUrl}`)
+            : '/img/logo_placeholder.png',
+        integrantesCount: ins.equipo?.noIntegrantes || 0,
+        estado: ins.estado, // PENDIENTE, APROBADO, RECHAZADO
+        fechaSolicitud: ins.fechaSolicitud,
+        cumpleRequisitos: ins.cumpleRequisitos
+    }));
 };
 
-// Mantenemos la anterior por compatibilidad si se usa en otro lado, o la redirigimos
-export const getMiEquipo = async (userId: string) => {
-    const equipos = await getMisEquipos(userId);
-    return equipos.length > 0 ? equipos[0].equipo : null;
+// 2. Actualizar Estado (Aprobar/Rechazar)
+export const actualizarEstadoInscripcion = async (idInscripcion: string, estado: 'APROBADO' | 'RECHAZADO', comentarios?: string) => {
+    const { data } = await api.patch(`/inscripciones/${idInscripcion}`, {
+        estado,
+        comentarios
+    });
+    return data;
 };

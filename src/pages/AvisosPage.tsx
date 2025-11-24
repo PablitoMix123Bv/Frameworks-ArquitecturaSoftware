@@ -1,25 +1,37 @@
 // src/pages/AvisosPage.tsx
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer'; 
-import CardAviso from '../components/CardAviso'; // Componente que crearemos
-import FiltroDeporte from '../components/FiltroDeporte'; // Reutilizamos el filtro para categorizar
+import CardAviso from '../components/CardAviso';
+import FiltroDeporte from '../components/FiltroDeporte';
 import type { Aviso } from '../types';
+import { getAvisos } from '../services/avisosService'; // <--- SERVICIO REAL
 import './AvisosPage.css';
 
-const mockAvisos: Aviso[] = [
-    { id: 1, titulo: '¡Inscripciones Abiertas! Torneo de Fútbol', contenido: 'Recuerden que el límite es el 15 de febrero.', fechaPublicacion: '2025-10-25', autor: 'Coordinador A', categoria: 'INSCRIPCIÓN', prioridad: 'URGENTE', idTorneoAsociado: 101 },
-    { id: 2, titulo: 'Reglas para el uso de Canchas', contenido: 'La cancha A solo puede usarse después de las 5 PM.', fechaPublicacion: '2025-10-20', autor: 'Coordinador B', categoria: 'GENERAL', prioridad: 'NORMAL', idTorneoAsociado: null },
-    { id: 3, titulo: 'Cambio de Horario - Partido Pythons vs Castrosos', contenido: 'El partido de mañana se mueve a las 6 PM.', fechaPublicacion: '2025-10-27', autor: 'Coordinador A', categoria: 'TORNEO', prioridad: 'NORMAL', idTorneoAsociado: 102 },
-];
-
 const AvisosPage: React.FC = () => {
-    // Para simplificar, usamos un filtro simple para la categoría
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = React.useState('TODOS'); 
+    const [avisos, setAvisos] = useState<Aviso[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('TODOS'); 
 
-    const avisosFiltrados = mockAvisos.filter(aviso => {
+    useEffect(() => {
+        const fetchAvisos = async () => {
+            try {
+                const data = await getAvisos();
+                setAvisos(data);
+            } catch (error) {
+                console.error("Error al cargar avisos:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchAvisos();
+    }, []);
+    
+    // El filtro usa categorías, no deportes, así que ajustamos la lógica
+    const avisosFiltrados = avisos.filter(aviso => {
         if (categoriaSeleccionada === 'TODOS') return true;
+        // Asumimos que el filtro de deporte puede recibir las categorías del aviso
         return aviso.categoria === categoriaSeleccionada;
     });
 
@@ -35,7 +47,12 @@ const AvisosPage: React.FC = () => {
                     valorActual={categoriaSeleccionada}
                 />
                 
+                {isLoading && <p>Cargando comunicados...</p>}
+
                 <div className="avisos-list">
+                    {avisosFiltrados.length === 0 && !isLoading && (
+                        <p className="no-avisos-message">No hay avisos disponibles en esta categoría.</p>
+                    )}
                     {avisosFiltrados.map(aviso => (
                         <CardAviso key={aviso.id} aviso={aviso} />
                     ))}

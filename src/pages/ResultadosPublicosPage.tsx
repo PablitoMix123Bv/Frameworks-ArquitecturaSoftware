@@ -1,31 +1,30 @@
-// src/pages/ResultadosPublicosPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
-import FiltroDeporte from '../components/FiltroDeporte'; // Restored!
+import FiltroDeporte from '../components/FiltroDeporte'; 
 import TablaClasificacion from '../components/TablaClasificacion'; 
 import type { Torneo, Partido } from '../types';
 import { getTorneos } from '../services/torneosService';
 import { getPartidos } from '../services/partidosService';
 import CardPartido from '../components/CardPartido';
 
+// 1. IMPORTACIÓN CORRECTA: Debe ser 'useNavigate' (el hook), NO 'Navigate' (el componente)
+import { useNavigate } from 'react-router-dom'; 
+
 const ResultadosPublicosPage: React.FC = () => {
-  // Datos crudos de la API
+  // 2. DECLARACIÓN CORRECTA: Ejecutamos el hook
+  const navigate = useNavigate(); 
+
   const [allTorneos, setAllTorneos] = useState<Torneo[]>([]);
   const [partidosFinalizados, setPartidosFinalizados] = useState<Partido[]>([]);
-  
-  // Estados de filtro visual
-  const [deporteSeleccionado, setDeporteSeleccionado] = useState('TODOS'); // Filtro de botones
-  const [torneoSeleccionadoId, setTorneoSeleccionadoId] = useState<string>(''); // Filtro de dropdown
+  const [deporteSeleccionado, setDeporteSeleccionado] = useState('TODOS'); 
+  const [torneoSeleccionadoId, setTorneoSeleccionadoId] = useState<string>('');
 
-  // 1. Cargar datos iniciales
   useEffect(() => {
     const loadData = async () => {
         const dataTorneos = await getTorneos();
         setAllTorneos(dataTorneos);
 
-        // Seleccionar por defecto el primero disponible si hay
         if (dataTorneos.length > 0) {
              setTorneoSeleccionadoId(dataTorneos[0].id);
         }
@@ -36,27 +35,23 @@ const ResultadosPublicosPage: React.FC = () => {
     loadData();
   }, []);
 
-  // 2. Lógica de filtrado: Torneos disponibles según el botón de deporte presionado
   const torneosFiltradosPorDeporte = allTorneos.filter(t => {
       if (deporteSeleccionado === 'TODOS') return true;
       return t.deporte?.toUpperCase() === deporteSeleccionado;
   });
 
-  // Efecto: Si cambio de deporte, resetear el dropdown al primer torneo de ese deporte
   useEffect(() => {
       if (torneosFiltradosPorDeporte.length > 0) {
           setTorneoSeleccionadoId(torneosFiltradosPorDeporte[0].id);
       } else {
           setTorneoSeleccionadoId('');
       }
-  }, [deporteSeleccionado, allTorneos]); // Dependencias: si cambia deporte o cargan torneos
+  }, [deporteSeleccionado, allTorneos]);
 
-  // Manejar cambio manual en el dropdown
   const handleTorneoDropdownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       setTorneoSeleccionadoId(e.target.value);
   };
 
-  // Obtener el objeto torneo completo para pasarlo a la tabla
   const torneoActualObj = allTorneos.find(t => t.id === torneoSeleccionadoId);
 
   return (
@@ -66,38 +61,35 @@ const ResultadosPublicosPage: React.FC = () => {
         
         <h2 style={{ color: '#1976D2' }}>Resultados y Clasificación</h2>
 
-        {/* 1. FILTRO DE BOTONES (Respetando diseño original) */}
         <FiltroDeporte 
             onFiltroChange={setDeporteSeleccionado}
             valorActual={deporteSeleccionado}
         />
 
-        {/* 2. SELECTOR DE TORNEO (Filtrado por el botón de arriba) */}
-        <div style={{ marginTop: '20px', marginBottom: '20px', padding: '15px', backgroundColor: '#F8F8F8', borderRadius: '8px', border: '1px solid #E0E0E0' }}>
-            <label htmlFor="select-torneo" style={{ fontWeight: 'bold', marginRight: '10px' }}>Ver tabla de:</label>
-            <select 
-                id="select-torneo" 
-                value={torneoSeleccionadoId} 
-                onChange={handleTorneoDropdownChange}
-                style={{ padding: '8px', borderRadius: '4px', minWidth: '250px', border: '1px solid #CCC' }}
-                disabled={torneosFiltradosPorDeporte.length === 0}
-            >
-                {torneosFiltradosPorDeporte.length === 0 && <option value="">No hay torneos para este deporte</option>}
-                {torneosFiltradosPorDeporte.map(t => (
-                    <option key={t.id} value={t.id}>{t.nombre} ({t.deporte})</option>
-                ))}
-            </select>
-        </div>
+        {torneosFiltradosPorDeporte.length > 0 && (
+            <div style={{ marginTop: '10px', marginBottom: '20px' }}>
+                <label htmlFor="select-torneo" style={{ fontWeight: 'bold', marginRight: '10px' }}>Torneo:</label>
+                <select 
+                    id="select-torneo" 
+                    value={torneoSeleccionadoId} 
+                    onChange={handleTorneoDropdownChange}
+                    style={{ padding: '5px', borderRadius: '4px', border: '1px solid #CCC' }}
+                >
+                    {torneosFiltradosPorDeporte.map(t => (
+                        <option key={t.id} value={t.id}>{t.nombre}</option>
+                    ))}
+                </select>
+            </div>
+        )}
 
-        {/* 3. TABLA DE CLASIFICACIÓN (Se muestra solo si hay torneo seleccionado) */}
         {torneoActualObj ? (
             <TablaClasificacion 
                 deporte={torneoActualObj.deporte}
                 idTorneo={torneoActualObj.id} 
             />
         ) : (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#777', backgroundColor: '#F9F9F9', borderRadius: '8px' }}>
-                <p>Selecciona un torneo para ver la tabla de posiciones.</p>
+            <div style={{ padding: '30px', textAlign: 'center', color: '#666', background: '#f5f5f5', borderRadius: '8px' }}>
+                <p>No hay torneos registrados para este deporte.</p>
             </div>
         )}
         
@@ -105,7 +97,15 @@ const ResultadosPublicosPage: React.FC = () => {
         <div className="partidos-list">
             {partidosFinalizados.length > 0 ? (
                 partidosFinalizados.map(p => (
-                    <CardPartido key={p.id} partido={p} />
+                    // 3. USO CORRECTO: navigate('/ruta')
+                    <div 
+                        key={p.id} 
+                        onClick={() => navigate(`/partido/${p.id}`)}
+                        style={{ cursor: 'pointer' }}
+                        title="Ver detalles del partido"
+                    >
+                        <CardPartido partido={p} />
+                    </div>
                 ))
             ) : (
                 <p>No hay partidos finalizados recientemente.</p>

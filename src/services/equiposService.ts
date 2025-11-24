@@ -1,54 +1,73 @@
-// src/services/equiposService.ts
-
 import api from '../api/axios';
-// CORRECCIÓN: Importamos 'Equipo' solo como tipo
 import type { Equipo } from '../types';
 
+// 1. Obtener la lista de todos los equipos (Esta es la que te faltaba)
 export const getEquiposPublicos = async (): Promise<Equipo[]> => {
-    // Solicitamos los equipos al backend (que incluye inscripciones y torneos)
     const { data } = await api.get<any[]>('/equipos'); 
     
     return data.map(backendEquipo => {
-        
-        // --- LÓGICA DINÁMICA PARA EL DEPORTE ---
-        let deporteMostrado = 'General'; // Valor por defecto
-        
-        // Verificamos si el equipo tiene inscripciones y si alguna tiene torneo asociado
+        // Lógica para obtener el deporte de la primera inscripción (si existe)
+        let deporteMostrado = 'General';
         if (backendEquipo.inscripciones && backendEquipo.inscripciones.length > 0) {
-            // Buscamos la primera inscripción que tenga información del torneo
-            const inscripcionValida = backendEquipo.inscripciones.find(
-                (ins: any) => ins.torneo && ins.torneo.nombreDeporte
-            );
-            
-            if (inscripcionValida) {
-                deporteMostrado = inscripcionValida.torneo.nombreDeporte;
-            }
+            // Buscamos si alguna inscripción tiene datos de torneo
+            const ins = backendEquipo.inscripciones.find((i: any) => i.torneo?.nombreDeporte);
+            if (ins) deporteMostrado = ins.torneo.nombreDeporte;
         }
 
-        // --- LÓGICA PARA EL LOGO (Rutas absolutas) ---
-        // Si backendEquipo.logoUrl ya es http..., lo dejamos. Si es solo nombre de archivo, le pegamos la URL del backend.
+        // Lógica de imagen (Puerto 3001)
         const logoUrlFinal = backendEquipo.logoUrl 
             ? (backendEquipo.logoUrl.startsWith('http') 
                 ? backendEquipo.logoUrl 
-                : `http://localhost:3000/uploads/equipos/${backendEquipo.logoUrl}`)
+                : `http://localhost:3001/uploads/equipos/${backendEquipo.logoUrl}`)
             : '/img/logo_placeholder.png';
 
         return {
             id: backendEquipo.id, 
             nombre: backendEquipo.nombre,
             logoUrl: logoUrlFinal,
-            // Nota: 'facultad' no existe en la BD actual, se deja estático por ahora o podrías sacarlo del 'expediente' del capitán si tuviera un formato específico
             facultad: 'Ingeniería', 
             victorias: backendEquipo.victorias,
             derrotas: backendEquipo.derrotas,
             empates: backendEquipo.empates,
             puntos: backendEquipo.puntos,
             jugadores: backendEquipo.jugadores || [],
-            
-            deporte: deporteMostrado, // <--- AHORA ES DINÁMICO
-            
+            deporte: deporteMostrado, 
             minJugadores: 0,
             maxJugadores: 0
         };
     });
+};
+
+// 2. Obtener un equipo individual por ID (Para el perfil)
+export const getEquipoById = async (id: string): Promise<Equipo | null> => {
+    try {
+        const { data } = await api.get<any>(`/equipos/${id}`);
+        
+        const logoUrlFinal = data.logoUrl 
+            ? (data.logoUrl.startsWith('http') ? data.logoUrl : `http://localhost:3001/uploads/equipos/${data.logoUrl}`)
+            : '/img/logo_placeholder.png';
+
+        let deporte = 'General';
+        if (data.inscripciones && data.inscripciones.length > 0) {
+             deporte = data.inscripciones[0].torneo?.nombreDeporte || 'General';
+        }
+
+        return {
+            id: data.id,
+            nombre: data.nombre,
+            logoUrl: logoUrlFinal,
+            facultad: 'Ingeniería',
+            victorias: data.victorias,
+            derrotas: data.derrotas,
+            empates: data.empates,
+            puntos: data.puntos,
+            jugadores: data.jugadores || [],
+            deporte: deporte,
+            minJugadores: 0,
+            maxJugadores: 0
+        };
+    } catch (error) {
+        console.error("Error al cargar equipo:", error);
+        return null;
+    }
 };

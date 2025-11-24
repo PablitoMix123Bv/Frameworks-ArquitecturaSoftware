@@ -1,6 +1,5 @@
 // src/types/index.ts
 
-// 1. AGREGAMOS 'capitan' A LOS ROLES
 export type Rol = 'administrador' | 'jugador' | 'árbitro' | 'capitan';
 
 export interface EquipoInfo {
@@ -11,7 +10,7 @@ export interface EquipoInfo {
 export type EstadoPartido = 'POR INICIAR' | 'EN PROCESO' | 'CANCELADO' | 'FINALIZADO';
 
 export interface Partido {
-  id: string; // UUID es string
+  id: string; 
   equipoLocal: EquipoInfo;
   equipoVisitante: EquipoInfo;
   estado: EstadoPartido;
@@ -27,7 +26,7 @@ export interface CardPartidoProps {
 }
 
 export interface Torneo {
-  id: string; // UUID es string
+  id: string; 
   nombre: string;
   deporte: string;
   fechaLimiteInscripcion: string;
@@ -42,7 +41,7 @@ export interface Torneo {
 }
 
 export interface Equipo {
-  id: string; // UUID es string
+  id: string; 
   nombre: string;
   logoUrl: string;
   facultad: string;
@@ -57,14 +56,13 @@ export interface Equipo {
   reglas?: string;
 }
 
-// Corrección: idTorneo ahora es string para coincidir con el UUID
 export interface TablaClasificacionProps {
   deporte: string;
   idTorneo: string; 
 }
 
 export interface EquipoEstadistica {
-  idEquipo: number | string;
+  idEquipo: string | number; 
   nombreEquipo: string;
   partidosJugados: number;
   victorias: number;
@@ -80,19 +78,18 @@ export interface FiltroDeporteProps {
   valorActual: string;
 }
 
-// ... (El resto de interfaces como Aviso, SolicitudInscripcion se mantienen igual)
 export type CategoriaAviso = 'GENERAL' | 'TORNEO' | 'INSCRIPCIÓN';
 export type PrioridadAviso = 'NORMAL' | 'URGENTE';
 
 export interface Aviso {
-  id: number;
+  id: string; // Corregido a string (UUID)
   titulo: string;
   contenido: string;
   fechaPublicacion: string;
   autor: string; 
   categoria: CategoriaAviso;
   prioridad: PrioridadAviso;
-  idTorneoAsociado: number | null;
+  idTorneoAsociado: string | null; // Corregido a string (UUID)
 }
 
 export interface CardAvisoProps {
@@ -108,7 +105,7 @@ export interface JugadorInscripcion {
 }
 
 export interface SolicitudInscripcion {
-  idTorneo: number | string; // Flexible para aceptar UUIDs
+  idTorneo: string; 
   nombreEquipo: string;
   logoUrl: string; 
   integrantes: JugadorInscripcion[];
@@ -135,10 +132,10 @@ export interface FormularioTorneoProps {
 }
 
 export interface ProgramarPartidoData {
-  id: number | null; 
-  idTorneo: number; 
-  idEquipoLocal: number;
-  idEquipoVisitante: number;
+  id: string | null; // Corregido
+  idTorneo: string; 
+  idEquipoLocal: string;
+  idEquipoVisitante: string;
   fecha: string;
   hora: string;
   lugar: string;
@@ -151,7 +148,7 @@ export interface FormularioJornadaProps {
 }
 
 export interface Arbitro {
-  id: number;
+  id: string; // Corregido
   nombreCompleto: string;
   email: string;
   rol: 'árbitro'; 

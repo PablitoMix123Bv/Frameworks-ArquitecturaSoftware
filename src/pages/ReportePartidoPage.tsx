@@ -1,41 +1,81 @@
-// src/pages/ReportePartidoPage.tsx (NUEVO ARCHIVO)
+// src/pages/ReportePartidoPage.tsx
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import type { Partido } from '../types';
-import './ReportePartidoPage.css'; // Crearemos este CSS
+import { getPartidoById } from '../services/partidosService'; // Servicio real
+import './ReportePartidoPage.css';
 
-// Mock de todos los partidos (simulando la BD)
-const mockPartidosRepo: Partido[] = [
-    { id: 10, equipoLocal: { nombre: 'Hunters', logoUrl: '/img/logo1.png' }, equipoVisitante: { nombre: 'Astros', logoUrl: '/img/logo2.png' }, estado: 'POR INICIAR', marcadorLocal: null, marcadorVisitante: null, Deporte: 'FUTBOL' },
-    { id: 11, equipoLocal: { nombre: 'Águilas', logoUrl: '/img/logo5.png' }, equipoVisitante: { nombre: 'Tigres', logoUrl: '/img/logo6.png' }, estado: 'EN PROCESO', marcadorLocal: 1, marcadorVisitante: 0, Deporte: 'FUTBOL' },
-    { id: 12, equipoLocal: { nombre: 'Leones', logoUrl: '/img/logo_placeholder.png' }, equipoVisitante: { nombre: 'Pythons', logoUrl: '/img/logo4.png' }, estado: 'FINALIZADO', marcadorLocal: 3, marcadorVisitante: 2, Deporte: 'FUTBOL' },
-];
+// Reutilizamos el componente visual de Avatar para mantener consistencia
+const EquipoAvatar: React.FC<{ nombre: string; url: string }> = ({ nombre, url }) => {
+    const [imgFailed, setImgFailed] = useState(false);
+    
+    const getInitials = (name: string) => {
+        if (!name) return "SF";
+        const parts = name.trim().split(' ');
+        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    };
+
+    const stringToColor = (str: string) => {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+        return '#' + '00000'.substring(0, 6 - c.length) + c;
+    };
+
+    if (!url || imgFailed) {
+        return (
+            <div style={{ 
+                width: '100px', height: '100px', borderRadius: '50%', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                backgroundColor: stringToColor(nombre), color: 'white', 
+                fontSize: '2.5rem', fontWeight: 'bold', margin: '0 auto 15px',
+                border: '4px solid white', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+            }}>
+                {getInitials(nombre)}
+            </div>
+        );
+    }
+
+    return (
+        <img 
+            src={url} 
+            alt={nombre} 
+            className="equipo-logo-reporte" 
+            onError={() => setImgFailed(true)}
+        />
+    );
+};
 
 const ReportePartidoPage: React.FC = () => {
     const { idPartido } = useParams<{ idPartido: string }>();
+    const navigate = useNavigate();
     const [partido, setPartido] = useState<Partido | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Buscamos el partido en nuestro mock
-        const idNum = parseInt(idPartido || '0');
-        const partidoEncontrado = mockPartidosRepo.find(p => p.id === idNum);
-        
-        if (partidoEncontrado) {
-            setPartido(partidoEncontrado);
-        } else {
-            console.error("No se encontró el reporte para el partido ID:", idPartido);
-        }
+        const fetchDatos = async () => {
+            if (idPartido) {
+                const data = await getPartidoById(idPartido);
+                setPartido(data);
+            }
+            setLoading(false);
+        };
+        fetchDatos();
     }, [idPartido]);
+
+    if (loading) return <div className="content-container">Cargando reporte...</div>;
 
     if (!partido) {
         return (
             <div>
                 <HeaderNav />
                 <div className="content-container">
-                    <h2>Cargando reporte...</h2>
+                    <h2>Partido no encontrado</h2>
+                    <button onClick={() => navigate('/resultados')} className="btn-primary">Volver</button>
                 </div>
                 <Footer />
             </div>
@@ -46,33 +86,43 @@ const ReportePartidoPage: React.FC = () => {
         <div>
             <HeaderNav />
             <div className="content-container">
+                <button onClick={() => navigate(-1)} className="btn-secondary" style={{marginBottom: '20px'}}>
+                    ← Volver
+                </button>
+
                 <div className="reporte-card">
                     <div className="reporte-header">
-                        <h2>Reporte de Partido (Finalizado)</h2>
+                        <h2>Reporte Oficial</h2>
                         <span className="reporte-deporte">{partido.Deporte}</span>
                     </div>
                     
                     <div className="reporte-equipos">
                         {/* Equipo Local */}
                         <div className="equipo-col">
-                            <img src={partido.equipoLocal.logoUrl} alt={partido.equipoLocal.nombre} className="equipo-logo-reporte" />
+                            <EquipoAvatar nombre={partido.equipoLocal.nombre} url={partido.equipoLocal.logoUrl} />
                             <h3>{partido.equipoLocal.nombre}</h3>
                             <span className="marcador-final local">{partido.marcadorLocal}</span>
                         </div>
 
-                        <span className="vs-reporte">VS</span>
+                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            <span className="vs-reporte">VS</span>
+                            <div className={`estado-tag ${partido.estado === 'FINALIZADO' ? 'finalizado' : 'pendiente'}`}>
+                                {partido.estado}
+                            </div>
+                        </div>
 
                         {/* Equipo Visitante */}
                         <div className="equipo-col">
-                            <img src={partido.equipoVisitante.logoUrl} alt={partido.equipoVisitante.nombre} className="equipo-logo-reporte" />
+                            <EquipoAvatar nombre={partido.equipoVisitante.nombre} url={partido.equipoVisitante.logoUrl} />
                             <h3>{partido.equipoVisitante.nombre}</h3>
                             <span className="marcador-final visitante">{partido.marcadorVisitante}</span>
                         </div>
                     </div>
                     
                     <div className="reporte-footer">
-                        <p>Partido ID: {partido.id} | Arbitrado por: (Nombre del Árbitro)</p>
-                        <Link to="/public/resultados" className="btn-primary">Volver a Resultados</Link>
+                        <p><strong>Lugar:</strong> {partido.lugar}</p>
+                        <p><strong>Fecha:</strong> {new Date(partido.fechaInicio || '').toLocaleString()}</p>
+                        <p><small>ID de Partido: {partido.id}</small></p>
                     </div>
                 </div>
             </div>

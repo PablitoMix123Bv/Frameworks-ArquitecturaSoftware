@@ -1,78 +1,82 @@
-// src/pages/InscripcionesAdminPage.tsx (CORREGIDO)
-import React, { useState } from 'react';
+// src/pages/InscripcionesAdminPage.tsx
+
+import React, { useState, useEffect } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
-import type { SolicitudInscripcion } from '../types';
+import { getTodasInscripciones, actualizarEstadoInscripcion } from '../services/inscripcionesService';
 import './InscripcionesAdminPage.css'; 
-
-// --- 1. IMPORTAR ICONOS (AÑADIMOS FaTimesCircle) ---
-import { FaCheck, FaCommentDots, FaTimesCircle } from 'react-icons/fa'; 
-
-// (El componente ModalRetroalimentacion se queda igual que en el paso anterior)
-const ModalRetroalimentacion: React.FC<{ solicitud: SolicitudInscripcion, onClose: () => void, onSubmit: (motivo: string) => void }> = ({ solicitud, onClose, onSubmit }) => {
+import { FaCheck, FaTimesCircle, FaCommentDots } from 'react-icons/fa'; 
+    
+// Modal interno para rechazo con motivo
+const ModalRechazo: React.FC<{ onClose: () => void, onSubmit: (motivo: string) => void }> = ({ onClose, onSubmit }) => {
     const [motivo, setMotivo] = useState('');
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!motivo) {
-            alert('Debes escribir un motivo para la revisión.');
-            return;
-        }
-        onSubmit(motivo);
-    };
     return (
         <div className="modal-overlay">
-            <div className="modal-content-roster"> {/* Reutilizamos CSS del modal de roster */}
+            <div className="modal-content">
                 <button className="modal-close-button" onClick={onClose}>&times;</button>
-                <h2>Solicitar Cambios</h2>
-                <h3>Equipo: {solicitud.nombreEquipo}</h3>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="motivo">Motivo de la revisión (será visible para el capitán):</label>
-                        <textarea 
-                            id="motivo" 
-                            rows={4}
-                            value={motivo}
-                            onChange={(e) => setMotivo(e.target.value)}
-                            placeholder="Ej: Faltan jugadores, el logo no es válido..."
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn-primary" style={{backgroundColor: '#FF9800'}}>Enviar Retroalimentación</button>
-                </form>
+                <h2>Rechazar Inscripción</h2>
+                <div className="form-group">
+                    <label>Motivo del rechazo:</label>
+                    <textarea 
+                        rows={4}
+                        value={motivo}
+                        onChange={(e) => setMotivo(e.target.value)}
+                        placeholder="Ej: El logo es inapropiado, faltan jugadores..."
+                        required
+                    />
+                </div>
+                <button className="btn-danger" style={{width: '100%'}} onClick={() => onSubmit(motivo)}>
+                    Confirmar Rechazo
+                </button>
             </div>
         </div>
     );
 };
 
-
-// Mock de solicitudes pendientes
-const mockSolicitudes: SolicitudInscripcion[] = [
-    { idTorneo: 101, nombreEquipo: 'Hunters', logoUrl: '/img/hunters.png', integrantes: [/*...*/] as any, fechaSolicitud: '2025-11-04' },
-    { idTorneo: 101, nombreEquipo: 'Los Mamados', logoUrl: '/img/logo_placeholder.png', integrantes: [/*...*/] as any, fechaSolicitud: '2025-11-03' },
-];
-
 const InscripcionesAdminPage: React.FC = () => {
-    const [solicitudes, setSolicitudes] = useState(mockSolicitudes);
-    const [solicitudEnRevision, setSolicitudEnRevision] = useState<SolicitudInscripcion | null>(null);
+    const [solicitudes, setSolicitudes] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [idParaRechazar, setIdParaRechazar] = useState<string | null>(null);
 
-    const handleAprobar = (nombreEquipo: string) => {
-        alert(`Equipo "${nombreEquipo}" APROBADO.`);
-        setSolicitudes(solicitudes.filter(s => s.nombreEquipo !== nombreEquipo));
+    // Cargar datos reales
+    const fetchSolicitudes = async () => {
+        setIsLoading(true);
+        try {
+            const data = await getTodasInscripciones();
+            // Filtramos para ver principalmente las PENDIENTES primero
+            // Opcional: podrías mostrar todas separadas por estado
+            setSolicitudes(data.filter(s => s.estado === 'PENDIENTE'));
+        } catch (error) {
+            console.error("Error cargando inscripciones", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleEnviarRetro = (motivo: string) => {
-        if (!solicitudEnRevision) return;
-        alert(`Retroalimentación enviada para "${solicitudEnRevision.nombreEquipo}".`);
-        setSolicitudes(solicitudes.filter(s => s.nombreEquipo !== solicitudEnRevision.nombreEquipo));
-        setSolicitudEnRevision(null); 
+    useEffect(() => {
+        fetchSolicitudes();
+    }, []);
+
+    const handleAprobar = async (id: string) => {
+        if (window.confirm('¿Aprobar este equipo para el torneo?')) {
+            try {
+                await actualizarEstadoInscripcion(id, 'APROBADO');
+                fetchSolicitudes(); // Recargar lista
+            } catch (error) {
+                alert('Error al aprobar');
+            }
+        }
     };
 
-    // --- 2. NUEVA FUNCIÓN PARA RECHAZO DEFINITIVO ---
-    const handleRechazarDefinitivo = (nombreEquipo: string) => {
-        if (window.confirm(`¿Estás seguro de RECHAZAR PERMANENTEMENTE a "${nombreEquipo}"? Esta acción no se puede deshacer.`)) {
-            alert(`Equipo "${nombreEquipo}" RECHAZADO DEFINITIVAMENTE.`);
-            // Aquí llamarías a la API para marcarlo como "Rechazado"
-            setSolicitudes(solicitudes.filter(s => s.nombreEquipo !== nombreEquipo));
+    const handleConfirmarRechazo = async (motivo: string) => {
+        if (idParaRechazar && motivo) {
+            try {
+                await actualizarEstadoInscripcion(idParaRechazar, 'RECHAZADO', motivo);
+                setIdParaRechazar(null);
+                fetchSolicitudes();
+            } catch (error) {
+                alert('Error al rechazar');
+            }
         }
     };
 
@@ -82,27 +86,35 @@ const InscripcionesAdminPage: React.FC = () => {
             <div className="content-container">
                 <h2>Gestión de Inscripciones Pendientes</h2>
                 
+                {isLoading && <p>Cargando solicitudes...</p>}
+                
+                {!isLoading && solicitudes.length === 0 && (
+                    <div style={{padding: '40px', textAlign: 'center', color: '#666', background: '#f9f9f9', borderRadius: '8px'}}>
+                        <p>No hay solicitudes pendientes de revisión.</p>
+                    </div>
+                )}
+                
                 <div className="solicitudes-list">
-                    {solicitudes.length === 0 && <p>No hay solicitudes pendientes.</p>}
-                    
-                    {solicitudes.map((solicitud, index) => (
-                        <div key={index} className="card-solicitud-admin">
+                    {solicitudes.map((solicitud) => (
+                        <div key={solicitud.id} className="card-solicitud-admin">
                             <img src={solicitud.logoUrl} alt="Logo" className="solicitud-logo" />
                             <div className="solicitud-details">
-                                <h4>{solicitud.nombreEquipo}</h4>
-                                <p>Solicitud para Torneo ID: {solicitud.idTorneo}</p>
-                                <small>Enviada: {solicitud.fechaSolicitud}</small>
+                                <h4>{solicitud.equipo}</h4>
+                                <p><strong>Torneo:</strong> {solicitud.torneo} ({solicitud.deporte})</p>
+                                <p>Integrantes: {solicitud.integrantesCount}</p>
+                                <small>Fecha solicitud: {new Date(solicitud.fechaSolicitud).toLocaleDateString()}</small>
+                                {!solicitud.cumpleRequisitos && (
+                                    <p style={{color: 'red', fontWeight: 'bold', fontSize: '0.8rem'}}>
+                                        No cumple con el mínimo de jugadores
+                                    </p>
+                                )}
                             </div>
                             
-                            {/* --- 3. TRES BOTONES DE ACCIÓN --- */}
                             <div className="solicitud-actions">
-                                <button className="btn-aprobar" onClick={() => handleAprobar(solicitud.nombreEquipo)}>
+                                <button className="btn-aprobar" onClick={() => handleAprobar(solicitud.id)}>
                                     <FaCheck /> Aprobar
                                 </button>
-                                <button className="btn-solicitar-cambios" onClick={() => setSolicitudEnRevision(solicitud)}>
-                                    <FaCommentDots /> Solicitar Cambios
-                                </button>
-                                <button className="btn-rechazar-definitivo" onClick={() => handleRechazarDefinitivo(solicitud.nombreEquipo)}>
+                                <button className="btn-rechazar-definitivo" onClick={() => setIdParaRechazar(solicitud.id)}>
                                     <FaTimesCircle /> Rechazar
                                 </button>
                             </div>
@@ -112,14 +124,14 @@ const InscripcionesAdminPage: React.FC = () => {
             </div>
             <Footer />
 
-            {solicitudEnRevision && (
-                <ModalRetroalimentacion
-                    solicitud={solicitudEnRevision}
-                    onClose={() => setSolicitudEnRevision(null)}
-                    onSubmit={handleEnviarRetro}
+            {idParaRechazar && (
+                <ModalRechazo
+                    onClose={() => setIdParaRechazar(null)}
+                    onSubmit={handleConfirmarRechazo}
                 />
             )}
         </div>
     );
 };
+
 export default InscripcionesAdminPage;

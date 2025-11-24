@@ -1,28 +1,36 @@
-// src/pages/AvisosAdminPage.tsx (CORREGIDO)
+// src/pages/AvisosAdminPage.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderNav from '../components/HeaderNav';
 import Footer from '../components/Footer';
 import FormularioAviso from '../components/FormularioAviso';
 import type { Aviso } from '../types'; 
-import './AvisosAdminPage.css'; // Sigue usando su propio CSS
-
-// 1. Importamos el icono que vamos a usar
+import { getAvisos, deleteAviso } from '../services/avisosService'; // <--- SERVICIO REAL
+import './AvisosAdminPage.css';
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
 
-// Datos mock
-const mockAvisos: Aviso[] = [
-    { id: 1, titulo: 'Inscripciones Abiertas', contenido: 'Recuerden que el límite es el 15 de febrero.', fechaPublicacion: '2025-10-25', autor: 'Coordinador A', categoria: 'INSCRIPCIÓN', prioridad: 'URGENTE', idTorneoAsociado: 101 },
-    { id: 2, titulo: 'Reglas Canchas', contenido: 'La cancha A solo puede usarse después de las 5 PM.', fechaPublicacion: '2025-10-20', autor: 'Coordinador B', categoria: 'GENERAL', prioridad: 'NORMAL', idTorneoAsociado: null },
-];
-
 const AvisosAdminPage: React.FC = () => {
-    const [avisos, setAvisos] = useState(mockAvisos);
+    const [avisos, setAvisos] = useState<Aviso[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [avisoAEditar, setAvisoAEditar] = useState<Aviso | null>(null);
 
+    const fetchAvisos = async () => {
+        setIsLoading(true);
+        try {
+            const data = await getAvisos();
+            setAvisos(data);
+        } catch (error) {
+            console.error("Error al cargar avisos:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    useEffect(() => { fetchAvisos(); }, []);
+
     const handleSuccess = () => {
-        console.log("Lista de avisos actualizada.");
+        fetchAvisos(); // Recarga la lista después de crear/editar
         setIsModalOpen(false);
     };
 
@@ -31,9 +39,14 @@ const AvisosAdminPage: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id: number) => {
+    const handleDelete = async (id: string | number) => {
         if (window.confirm('¿Está seguro de eliminar este aviso?')) {
-            setAvisos(avisos.filter(a => a.id !== id));
+            try {
+                await deleteAviso(id);
+                fetchAvisos();
+            } catch (error) {
+                alert('Error al eliminar el aviso');
+            }
         }
     };
 
@@ -42,11 +55,9 @@ const AvisosAdminPage: React.FC = () => {
             <HeaderNav />
             <div className="content-container">
                 
-                {/* --- 2. ESTRUCTURA DE ENCABEZADO CORREGIDA --- */}
                 <div className="admin-page-header">
                     <h2>Gestión de Avisos</h2>
                     
-                    {/* Agrupamos el botón a la derecha */}
                     <div className="admin-header-actions">
                         <button 
                             className="btn-primary" 
@@ -56,16 +67,18 @@ const AvisosAdminPage: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                {/* --- FIN DE LA CORRECCIÓN --- */}
 
+                {isLoading && <p>Cargando avisos...</p>}
 
                 <div className="avisos-admin-list">
+                    {avisos.length === 0 && !isLoading && <p>No hay avisos registrados.</p>}
+
                     {avisos.map(aviso => (
                         <div key={aviso.id} className="card-aviso-admin">
                             <div className="aviso-details">
                                 <h4>{aviso.titulo}</h4>
                                 <p>{aviso.contenido.substring(0, 80)}...</p>
-                                <small>Categoría: {aviso.categoria} | Prioridad: {aviso.prioridad}</small>
+                                <small>Categoría: {aviso.categoria} | Prioridad: {aviso.prioridad} | Autor: {aviso.autor}</small>
                             </div>
                             <div className="aviso-actions">
                                 <button className="btn-icon edit" onClick={() => handleEdit(aviso)}>

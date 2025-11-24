@@ -29,9 +29,10 @@ const PanelArbitro: React.FC = () => {
 
     const handleButtonClick = (partido: Partido) => {
         if (partido.estado === 'FINALIZADO') {
-            navigate(`/public/partido/${partido.id}`); // Ver reporte
+            // CORRECCIÓN: Ruta limpia sin '/public'
+            navigate(`/partido/${partido.id}`); 
         } else {
-            navigate(`/arbitro/juego/${partido.id}`); // Controlar juego
+            navigate(`/arbitro/juego/${partido.id}`);
         }
     };
 

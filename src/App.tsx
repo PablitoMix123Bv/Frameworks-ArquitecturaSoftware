@@ -1,94 +1,91 @@
-// src/App.tsx (CORREGIDO)
-// import React from 'react'; // React 17+ ya no necesita esta importación en cada archivo
+// src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// --- 1. ELIMINAMOS ESTA LÍNEA ---
-// import './App.css'; // <--- ESTA LÍNEA SE VA
-
-// Componentes de la aplicación
-import Login from './pages/Login.tsx';
+// Componentes de la aplicación (Imports limpios sin .tsx)
+import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import TorneoAdminPage from './pages/TorneoAdminPage'; 
-import PartidosPage from './pages/PartidosPage.tsx'
-import PublicHomePage from './pages/PublicHomePage'; // Equipos
+import PartidosPage from './pages/PartidosPage';
+import PublicHomePage from './pages/PublicHomePage';
 import TorneosPublicosPage from './pages/TorneosPublicosPage';
 import ResultadosPublicosPage from './pages/ResultadosPublicosPage';
 import InscripcionesPage from './pages/InscripcionesPage';
-import AvisosPage from './pages/AvisosPage.tsx';
-import AvisosAdminPage from './pages/AvisosAdminPage.tsx';
+import AvisosPage from './pages/AvisosPage';
+import AvisosAdminPage from './pages/AvisosAdminPage';
 import PerfilEquipoPage from './pages/PerfilEquipoPage';
-import PanelArbitro from './pages/PanelArbitro.tsx';
-// import FormularioRegistroMarcador from './components/FormularioRegistroMarcador.tsx'; // Ya no se importa aquí
-import ArbitroAdminPage from './pages/ArbitroAdminPage.tsx'; 
-import MiEquipoDashboard from './pages/MiEquipoDashboard.tsx';
-import ControlPartidoPage from './pages/ControlPartidoPage.tsx'; 
-import InscripcionesAdminPage from './pages/InscripcionesAdminPage.tsx';
-import ReportePartidoPage from './pages/ReportePartidoPage.tsx';
+import PanelArbitro from './pages/PanelArbitro';
+import ArbitroAdminPage from './pages/ArbitroAdminPage'; 
+import MiEquipoDashboard from './pages/MiEquipoDashboard';
+import ControlPartidoPage from './pages/ControlPartidoPage'; 
+import InscripcionesAdminPage from './pages/InscripcionesAdminPage';
+import ReportePartidoPage from './pages/ReportePartidoPage';
+
 function App() {
   return (
     <Router>
       <Routes>
-        {/* RUTA RAÍZ: Redirige a la lista de EQUIPOS */}
-        <Route path="/" element={<Navigate to="/public/equipos" replace />} />
+        {/* Redirección inicial corregida */}
+        <Route path="/" element={<Navigate to="/equipos" replace />} />
         
-        {/* -------------------- Rutas Públicas -------------------- */}
+        {/* Rutas Públicas */}
         <Route path="/login" element={<Login />} />
-        <Route path="/public/equipos" element={<PublicHomePage />} />
-        <Route path="/public/equipos/:id/perfil" element={<PerfilEquipoPage />} />
-        <Route path="/public/torneos" element={<TorneosPublicosPage />} />
-        <Route path="/public/resultados" element={<ResultadosPublicosPage />} />
-        <Route path="/public/partidos" element={<PartidosPage />} />
-        <Route path="/public/inscripciones" element={<InscripcionesPage />} />
-        <Route path="/public/avisos" element={<AvisosPage />} />
-        <Route path="/public/partido/:idPartido" element={<ReportePartidoPage />} />
-        {/* -------------------- Rutas Protegidas -------------------- */}
+        <Route path="/equipos" element={<PublicHomePage />} />
+        <Route path="/equipos/:id/perfil" element={<PerfilEquipoPage />} />
+        <Route path="/torneos" element={<TorneosPublicosPage />} />
+        <Route path="/resultados" element={<ResultadosPublicosPage />} />
+        <Route path="/partidos" element={<PartidosPage />} />
+        <Route path="/inscripciones" element={<InscripcionesPage />} />
+        <Route path="/avisos" element={<AvisosPage />} />
+        <Route path="/partido/:idPartido" element={<ReportePartidoPage />} />
         
-        {/* JUGADOR: */}
+        {/* Rutas Protegidas */}
+        
+        {/* JUGADOR (Capitán) */}
         <Route 
           path="/perfil/mi-equipo" 
-          element={<ProtectedRoute requiredRole="jugador"><MiEquipoDashboard /></ProtectedRoute>} 
+          element={<ProtectedRoute requiredRole="capitan"><MiEquipoDashboard /></ProtectedRoute>} 
         />
         
-        {/* ADMIN: Torneos (Dashboard Principal) */}
+        {/* ADMIN */}
         <Route 
           path="/admin/torneos" 
           element={<ProtectedRoute requiredRole="administrador"><TorneoAdminPage /></ProtectedRoute>} 
         />
-        {/* ADMIN: Avisos */}
         <Route 
           path="/admin/avisos" 
           element={<ProtectedRoute requiredRole="administrador"><AvisosAdminPage /></ProtectedRoute>} 
         />
-        {/* ADMIN: Gestión Árbitros */}
         <Route 
           path="/admin/arbitros" 
           element={<ProtectedRoute requiredRole="administrador"><ArbitroAdminPage /></ProtectedRoute>} 
         />
-        {/* ADMIN: Gestión Inscripciones */}
         <Route 
           path="/admin/inscripciones" 
           element={<ProtectedRoute requiredRole="administrador"><InscripcionesAdminPage /></ProtectedRoute>} 
         />
 
-        {/* ÁRBITRO: Dashboard */}
+        {/* ÁRBITRO */}
         <Route 
           path="/arbitro/dashboard" 
           element={<ProtectedRoute requiredRole="árbitro"><PanelArbitro /></ProtectedRoute>} 
         />
         
-        {/* ÁRBITRO: Control de Juego */}
         <Route 
           path="/arbitro/juego/:idPartido" 
-          element={<ProtectedRoute requiredRole="árbitro">
-              <ControlPartidoPage />
-            </ProtectedRoute>} 
+          element={<ProtectedRoute requiredRole="árbitro"><ControlPartidoPage /></ProtectedRoute>} 
         />
         
-        {/* Si el usuario intenta ir a una ruta que no existe */}
-        <Route path="*" element={<h1>404 | Página no encontrada</h1>} />
+        {/* Ruta 404 para evitar pantalla blanca si la ruta no existe */}
+        <Route path="*" element={
+            <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                <h1>404</h1>
+                <p>Página no encontrada</p>
+                <a href="/equipos" className="btn-primary">Volver al inicio</a>
+            </div>
+        } />
       </Routes>
     </Router>
   );
 }
 
-export default App;
+export default App; 

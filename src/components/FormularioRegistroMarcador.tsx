@@ -1,9 +1,9 @@
-// src/components/FormularioRegistroMarcador.tsx (CORREGIDO)
-
 import React, { useState, useEffect, useRef } from 'react';
 import type { Partido } from '../types';
 import './FormularioRegistroMarcador.css'; 
-import { FaPlay, FaPause, FaFlagCheckered, FaArrowRight } from 'react-icons/fa'; // Importamos iconos
+import { FaPlay, FaPause, FaFlagCheckered, FaArrowRight } from 'react-icons/fa';
+// 1. Importamos el servicio para iniciar el partido
+import { iniciarPartido } from '../services/partidosService';
 
 interface MarcadorProps {
     partido: Partido;
@@ -11,7 +11,7 @@ interface MarcadorProps {
     onUpdate: (data: { marcadorLocal: number, marcadorVisitante: number, tiempo: string, periodo: string }) => void;
 }
 
-// --- LÓGICA DE CONTROL DE PERIODO (NUEVO) ---
+// --- LÓGICA DE CONTROL DE PERIODO ---
 const getPeriodoConfig = (deporte: string) => {
     switch (deporte.toUpperCase()) {
         case 'FUTBOL':
@@ -31,8 +31,8 @@ const getPeriodoConfig = (deporte: string) => {
         case 'VOLEIBOL':
         case 'BÉISBOL':
             return {
-                nombre: 'Set / Entrada', // Simplificado
-                total: Infinity, // No hay límite fijo
+                nombre: 'Set / Entrada', 
+                total: Infinity, 
                 botonSiguiente: 'Siguiente Set',
                 botonFinal: 'Finalizar'
             };
@@ -48,7 +48,7 @@ const getPeriodoConfig = (deporte: string) => {
 
 const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinalizar, onUpdate }) => {
     
-    // --- LÓGICA DE ESTADO (ACTUALIZADA) ---
+    // --- LÓGICA DE ESTADO ---
     const [marcadorLocal, setMarcadorLocal] = useState(partido.marcadorLocal || 0);
     const [marcadorVisitante, setMarcadorVisitante] = useState(partido.marcadorVisitante || 0);
     const [isRunning, setIsRunning] = useState(partido.estado === 'EN PROCESO');
@@ -60,7 +60,7 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
     const [segundos, setSegundos] = useState(0); 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Lógica del Cronómetro (Se queda igual)
+    // Lógica del Cronómetro
     useEffect(() => {
         if (isRunning) {
             timerRef.current = setInterval(() => {
@@ -102,19 +102,34 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
         });
     };
 
-    // --- LÓGICA DE PERIODO (ACTUALIZADA) ---
+    // --- LÓGICA DE PERIODO ---
     const handleNextPeriodo = () => {
         if (periodoActual < configDeporte.total) { 
             setPeriodoActual(prev => prev + 1);
-            setSegundos(0); // Reiniciar tiempo
-            setIsRunning(false); // Pausar automáticamente
+            setSegundos(0); 
+            setIsRunning(false); 
         } else if (configDeporte.total === Infinity) {
-            // Para Voleibol/Béisbol, solo incrementa
             setPeriodoActual(prev => prev + 1);
             setSegundos(0);
             setIsRunning(false);
         }
-        // Si ya está en el último periodo (ej. 4/4), no hace nada
+    };
+
+    // --- 2. NUEVA LÓGICA PARA INICIAR/PAUSAR ---
+    const toggleTimer = async () => {
+        // Si el cronómetro está detenido y el partido sigue marcado como 'POR INICIAR' en la BD,
+        // significa que es el primer inicio. Llamamos a la API para cambiar el estado.
+        if (!isRunning && partido.estado === 'POR INICIAR') {
+            try {
+                await iniciarPartido(partido.id);
+                console.log("Partido iniciado en base de datos");
+            } catch (e) { 
+                console.error("Error al iniciar partido:", e); 
+                alert("No se pudo actualizar el estado del partido en el servidor.");
+            }
+        }
+        // Alternar estado del cronómetro local
+        setIsRunning(!isRunning);
     };
 
     const estaEnUltimoPeriodo = periodoActual === configDeporte.total;
@@ -123,14 +138,14 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
         <div className="marcador-control-box">
             <h3>Control de Juego: {partido.equipoLocal.nombre} vs {partido.equipoVisitante.nombre}</h3>
             
-            {/* Visor de Marcador (Sin cambios) */}
+            {/* Visor de Marcador */}
             <div className="marcador-display">
                 <div className="score-equipo">{marcadorLocal}</div>
                 <div className="separator-marcador">-</div>
                 <div className="score-equipo">{marcadorVisitante}</div>
             </div>
 
-            {/* --- Visor de Tiempo y Periodo (DINÁMICO) --- */}
+            {/* --- Visor de Tiempo y Periodo --- */}
             <div className="tiempo-control">
                 <span className="cuarto-display">
                     {configDeporte.nombre.toUpperCase()} {periodoActual}
@@ -139,7 +154,7 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
                 <span className="tiempo-display">{formatTime(segundos)}</span>
             </div>
 
-            {/* Controles de Puntaje (Sin cambios) */}
+            {/* Controles de Puntaje */}
             <div className="score-controles">
                 <div className="control-local">
                     <button onClick={() => handleScoreChange('local', 1)}>+1</button>
@@ -151,10 +166,10 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
                 </div>
             </div>
 
-            {/* --- Controles de Juego (DINÁMICOS) --- */}
+            {/* --- Controles de Juego --- */}
             <div className="juego-controles">
                 <button 
-                    onClick={() => setIsRunning(!isRunning)}
+                    onClick={toggleTimer} // <--- 3. Usamos la nueva función aquí
                     className={isRunning ? 'btn-pause' : 'btn-start'}
                 >
                     {isRunning ? <FaPause /> : <FaPlay />}
@@ -163,11 +178,10 @@ const FormularioRegistroMarcador: React.FC<MarcadorProps> = ({ partido, onFinali
                 
                 <button 
                     onClick={handleNextPeriodo} 
-                    disabled={isRunning || estaEnUltimoPeriodo} // Deshabilitado si el tiempo corre o si es el último periodo
+                    disabled={isRunning || estaEnUltimoPeriodo} 
                     className="btn-next"
                 >
                     <FaArrowRight />
-                    {/* Botón dinámico */}
                     {estaEnUltimoPeriodo ? configDeporte.botonFinal : `${configDeporte.botonSiguiente} (${periodoActual + 1})`}
                 </button>
                 
