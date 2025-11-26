@@ -1,0 +1,110 @@
+/* src/pages/PanelArbitro.css (VERSIÓN CORREGIDA FINAL) */
+
+.arbitro-dashboard {
+    padding: 30px;
+}
+
+.arbitro-dashboard h1 {
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 2rem;
+}
+
+.sub-header {
+    color: #666;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 10px;
+}
+
+.partidos-asignados-list {
+    margin-top: 20px;
+}
+
+.card-partido-arbitro {
+    display: flex;
+    /* justify-content: space-between; <-- ELIMINAMOS ESTE CULPABLE */
+    align-items: center; 
+    background-color: white; /* Mantenemos el fondo blanco de tu imagen */
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 20px 25px; 
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* --- 1. ARREGLO BOTÓN A LA DERECHA --- */
+.partido-info-resumen {
+    flex: 1; /* <-- Esto empuja el botón a la derecha */
+    padding-right: 20px; 
+}
+
+.partido-info-resumen h4 {
+    color: #1976D2;
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.partido-info-resumen p {
+    margin: 0;
+    font-weight: bold;
+    color: #555;
+}
+
+/* --- 2. ARREGLO BOTÓN REDONDEADO Y ESPACIADO --- */
+.card-partido-arbitro .btn-primary {
+    flex-shrink: 0; /* No se encoge */
+    width: auto; /* El ancho será automático */
+    padding: 10px 20px; /* Padding normal */
+    
+    border-radius: 20px; /* <-- BOTÓN REDONDEADO */
+
+    display: flex; /* <-- Para alinear icono y texto */
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* <-- ESPACIO ENTRE ICONO Y TEXTO */
+}
+
+/* Badge de Estado */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white; /* Texto blanco para mejor lectura */
+    margin-right: 10px; /* Espacio a la derecha para separar de 'GENERAL' */
+    display: inline-block;
+}
+
+/* Colores específicos */
+.status-badge.finalizado {
+    background-color: #7B1FA2; /* Morado más legible o usa otro color si prefieres */
+    /* Opción Azul: background-color: #1976D2; */
+    /* Opción Gris Oscuro: background-color: #455A64; */
+}
+
+.status-badge.pendiente {
+    background-color: #FFA000; /* Ámbar */
+    color: white;
+}
+
+.sport-info {
+    color: #555;
+    font-weight: 500;
+    font-size: 0.9rem;
+    /* Aseguramos que no se pegue si el badge falla en cargar estilos */
+    margin-left: 5px; 
+}
+
+
+/* Indicadores de Estado (Borde izquierdo) */
+.estado-por-iniciar {
+    border-left: 5px solid #FFC107; /* Amarillo */
+}
+.estado-en-proceso {
+    border-left: 5px solid #4CAF50; /* Verde */
+}
+.estado-finalizado {
+    border-left: 5px solid #555; /* Gris oscuro */
+}

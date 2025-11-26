@@ -1,0 +1,59 @@
+/* src/components/CardAviso.css */
+
+.avisos-list {
+    margin-top: 20px;
+}
+
+.card-aviso {
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.aviso-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.aviso-tag {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.aviso-tag.general { background-color: #555; }
+.aviso-tag.torneo { background-color: #1976D2; }
+.aviso-tag.inscripción { background-color: #4CAF50; }
+
+.aviso-date {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.aviso-titulo {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 5px;
+}
+
+.aviso-contenido {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Estilo para avisos URGENTES (Alta Prioridad) */
+.aviso-urgente {
+    border-left: 5px solid #D32F2F; /* Borde rojo */
+    background-color: #FFF3F3;
+}

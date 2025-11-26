@@ -1,0 +1,88 @@
+/* src/components/CardTorneoAdmin.css */
+
+.card-torneo-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px; /* Espacio entre tarjetas en lista vertical */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.card-torneo-admin:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.torneo-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.torneo-titulo {
+    margin: 0 0 8px 0;
+    color: #1976D2; /* Azul corporativo */
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.torneo-desc {
+    color: #555;
+    font-size: 0.95rem;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+.torneo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.meta-tag {
+    background-color: #E3F2FD;
+    color: #1565C0;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- ACCIONES --- */
+.torneo-actions {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.btn-icon-action {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    color: #999;
+}
+
+.btn-icon-action:hover {
+    background-color: #F5F5F5;
+}
+
+/* Colores específicos al hover */
+.btn-icon-action.magic:hover { color: #9C27B0; background-color: #F3E5F5; } /* Morado para magia */
+.btn-icon-action.edit:hover { color: #1976D2; background-color: #E3F2FD; } /* Azul para editar */
+.btn-icon-action.delete:hover { color: #D32F2F; background-color: #FFEBEE; } /* Rojo para eliminar */

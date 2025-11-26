@@ -1,0 +1,188 @@
+/* src/components/FormularioRoster.css */
+
+/* Contenedor Principal de la Lista */
+.roster-container {
+    margin-bottom: 20px;
+    background-color: white; /* Fondo blanco puro */
+    border: 1px solid #BBDEFB; /* Borde azul muy suave */
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.05); /* Sombra azulada sutil */
+}
+
+/* Encabezado de la lista (Total: 2/20) */
+.roster-header-info {
+    padding: 12px 15px;
+    border-bottom: 1px solid #BBDEFB;
+    background-color: #E3F2FD; /* Fondo azul muy claro (Adiós gris) */
+    font-size: 0.85rem;
+    color: #1565C0; /* Texto azul oscuro */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.jugadores-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.jugador-item {
+    padding: 12px 15px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    border-bottom: 1px solid #E3F2FD; /* Separador azul claro */
+    background: white;
+    transition: background-color 0.2s;
+}
+
+.jugador-item:last-child {
+    border-bottom: none;
+}
+
+.jugador-item:hover {
+    background-color: #F1F8FF; /* Hover azul ultra suave */
+}
+
+/* ESTILOS DEL CAPITÁN (Destacado) */
+.capitan-item {
+    background-color: #E3F2FD; /* Fondo azul claro */
+    border-left: 4px solid #1976D2; /* Borde izquierdo azul fuerte */
+}
+
+.capitan-text {
+    color: #0D47A1; /* Azul muy oscuro para lectura */
+    font-weight: 700;
+}
+
+.capitan-icon {
+    color: #1976D2;
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.badge-capitan {
+    background-color: #1976D2;
+    color: white;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 12px; /* Más redondeado */
+    margin-left: 8px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Info del Jugador Normal */
+.jugador-info {
+    display: flex;
+    align-items: center;
+}
+
+.jugador-nombre {
+    font-size: 0.95rem;
+    color: #333; /* Texto oscuro estandar */
+    font-weight: 500;
+}
+
+/* Botón de eliminar (Icono) */
+.btn-icon.delete-action {
+    color: #90CAF9; /* Azul claro por defecto */
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.btn-icon.delete-action:hover {
+    color: #D32F2F; /* Rojo al interactuar */
+    background-color: #FFEBEE;
+}
+
+/* --- FORMULARIO DE AÑADIR (Diseño Bloque) --- */
+.form-add-jugador-block {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #E3F2FD; /* Separador visual azul */
+}
+
+/* Input estilizado */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #BBDEFB; /* Borde azul suave */
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: white;
+}
+
+.form-control:focus {
+    border-color: #1976D2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.form-control::placeholder {
+    color: #90CAF9; /* Placeholder azuloso suave */
+}
+
+/* Botón de Acción (AZUL PROTAGONISTA) */
+.full-width-btn {
+    width: 100%;
+    margin-top: 15px;
+    background-color: #1976D2; /* Azul Corporativo */
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3); /* Sombra azul */
+}
+
+.full-width-btn:hover {
+    background-color: #1565C0;
+    transform: translateY(-2px);
+}
+
+.full-width-btn:active {
+    transform: translateY(0);
+}
+
+.full-width-btn:disabled {
+    background-color: #BBDEFB;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Mensajes de error/vacío */
+.error-text-small {
+    color: #D32F2F;
+    background-color: #FFEBEE;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    text-align: center;
+    border: 1px solid #FFCDD2;
+}
+
+.empty-msg {
+    padding: 30px;
+    text-align: center;
+    color: #1976D2; /* Azul para mensaje vacío también */
+    font-style: italic;
+    opacity: 0.7;
+}

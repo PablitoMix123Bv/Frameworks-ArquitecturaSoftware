@@ -1,0 +1,149 @@
+/* src/pages/ReportePartidoPage.css */
+
+.reporte-card {
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra más elegante */
+    overflow: hidden;
+    border: 1px solid #E3F2FD;
+}
+
+/* ENCABEZADO AZUL SÓLIDO */
+.reporte-header {
+    background-color: #1976D2; /* Azul Corporativo */
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.reporte-header h2 {
+    margin: 0 0 15px 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+/* Contenedor para los badges (Estado y Deporte) */
+.header-badges {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Badge de Estado (FINALIZADO) - Blanco sobre Azul */
+.match-status-badge {
+    background-color: white;
+    color: #1976D2;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    letter-spacing: 0.5px;
+}
+
+/* Texto del Deporte */
+.reporte-deporte {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.9;
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+/* SECCIÓN DE EQUIPOS Y MARCADOR */
+.reporte-equipos {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 60px 20px;
+    background-color: white;
+}
+
+.equipo-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 35%;
+}
+
+.equipo-logo-reporte {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    /* Sombra suave para que destaque */
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); 
+    transition: transform 0.3s;
+}
+
+.equipo-logo-reporte:hover {
+    transform: scale(1.05);
+}
+
+.equipo-col h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Marcador Grande y Claro */
+.marcador-final {
+    font-size: 4.5rem;
+    font-weight: 900;
+    margin-top: 10px;
+    color: #1976D2; /* Azul */
+    line-height: 1;
+}
+
+.vs-reporte {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #E0E0E0; /* Gris muy claro solo para el VS de fondo */
+    user-select: none;
+}
+
+/* FOOTER DE DETALLES */
+.reporte-footer {
+    background-color: #F5F9FF; /* Fondo azul muy pálido, no gris */
+    padding: 30px;
+    text-align: center;
+    border-top: 1px solid #E3F2FD;
+}
+
+.reporte-footer p {
+    color: #555;
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+.reporte-footer strong {
+    color: #1976D2;
+}
+
+/* Botón de Volver */
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 25px;
+    padding: 12px 30px;
+    background-color: #1976D2;
+    color: white;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(25, 118, 210, 0.3);
+}
+
+.btn-volver:hover {
+    background-color: #1565C0;
+    transform: translateY(-2px);
+}

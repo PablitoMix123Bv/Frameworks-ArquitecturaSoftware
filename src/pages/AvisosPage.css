@@ -1,0 +1,42 @@
+/* src/pages/AvisosPage.css */
+
+/* Contenedor principal de la página de Avisos */
+.avisos-page-container {
+    padding: 20px;
+}
+
+.avisos-page-container h2 {
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #E0E0E0;
+    padding-bottom: 10px;
+}
+
+/* Espaciado general para la lista de avisos */
+.avisos-list {
+    margin-top: 25px;
+}
+
+/* Estilo para los botones de gestión de avisos (si fuera la vista de Admin) */
+.admin-avisos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Reutilizamos el estilo del filtro de deportes para las categorías */
+.filtro-aviso-contenedor {
+    margin-bottom: 20px;
+}
+
+/* Estilo para un aviso cuando no hay contenido */
+.no-avisos-message {
+    padding: 30px;
+    background-color: #FFFBEA;
+    border: 1px dashed #FFC107;
+    border-radius: 8px;
+    text-align: center;
+    color: #333;
+    font-size: 1.1rem;
+}

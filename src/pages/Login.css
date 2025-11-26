@@ -1,0 +1,129 @@
+/* src/Login.css - Estilos Dedicados al Formulario de Inicio de Sesión */
+
+/* Contenedor principal de la página de login (debe ocupar toda la vista) */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5; /* Fondo suave */
+}
+
+/* Caja del formulario central */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-box h1 {
+    color: #1976D2; /* Azul principal */
+    margin-bottom: 5px;
+    font-size: 1.8rem;
+}
+
+.login-box p {
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* --- Mensajes de Error --- */
+.error {
+    color: #D32F2F;
+    background-color: #FFCDD2;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* --- Grupos de Input --- */
+.input-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #CCC;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* --- Botón de Ingresar --- */
+.login-box button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #1976D2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-box button[type="submit"]:hover:not(:disabled) {
+    background-color: #1565C0;
+}
+
+.login-box button[type="submit"]:disabled {
+    background-color: #9E9E9E;
+    cursor: not-allowed;
+}
+
+/* Texto de registro */
+.register-text {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.register-text a {
+    color: #1976D2;
+    text-decoration: none;
+}
+
+.error-message-custom {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+    border: 1px solid #FFCDD2;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* Opcional: un pequeño icono o barra lateral para que destaque */
+.error-message-custom::before {
+    content: "!";
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+    background: #D32F2F;
+    color: white;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 18px;
+    font-size: 0.8rem;
+}

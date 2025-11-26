@@ -1,0 +1,120 @@
+/* src/components/CardPartido.css */
+
+.card-partido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 40px; 
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    border: 1px solid transparent; /* Prepara el borde para el hover */
+}
+
+/* --- NUEVO: CLASE CLICKABLE --- */
+.card-partido.clickable {
+    cursor: pointer; /* Manita */
+}
+
+.card-partido.clickable:hover {
+    transform: translateY(-4px); /* Se levanta */
+    box-shadow: 0 10px 20px rgba(25, 118, 210, 0.15); /* Sombra azulada */
+    border-color: #E3F2FD; /* Borde azul suave */
+}
+
+/* --- ESTILOS EXISTENTES (Mantener) --- */
+.partido-info-principal {
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    width: 65%;
+}
+
+.equipo-datos {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    width: 40%;
+}
+
+.equipo-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 5px; 
+}
+
+.equipo-nombre {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+.vs-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #777;
+    margin: 0 10px; 
+}
+
+.partido-info-resultado {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    gap: 8px; 
+}
+
+.tablero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; 
+    font-weight: bold;
+    color: white;
+}
+
+.tablero .score {
+    font-size: 1.8rem;
+    background-color: #1976D2; 
+    padding: 8px 15px; 
+    border-radius: 4px;
+    min-width: 50px; 
+    text-align: center;
+}
+
+.estado {
+    padding: 8px 20px;
+    border-radius: 50px; 
+    font-weight: bold;
+    color: white; 
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.en-proceso {
+    background-color: #4CAF50; 
+    animation: pulse 1.5s infinite;
+}
+
+.por-iniciar {
+    background-color: #FFC107; 
+}
+
+.cancelado {
+    background-color: #F44336; 
+}
+
+.finalizado {
+    background-color: #9622ef; /* Color que definiste previamente */
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}

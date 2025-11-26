@@ -1,0 +1,141 @@
+/* src/components/FormularioArbitro.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px); /* Efecto moderno */
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+
+.modal-content-arbitro {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px; /* Bordes más redondeados */
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    color: #333;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close-button {
+    position: absolute; top: 15px; right: 20px;
+    background: none; border: none; font-size: 1.8rem;
+    cursor: pointer; color: #999; transition: color 0.2s;
+}
+.modal-close-button:hover { color: #D32F2F; }
+
+.modal-content-arbitro h2 {
+    margin: 0 0 20px 0;
+    color: #1976D2; /* Azul principal */
+    text-align: center;
+    font-weight: 700;
+}
+
+/* --- PESTAÑAS --- */
+.tabs-arbitro {
+    display: flex;
+    margin-bottom: 20px;
+    background-color: #F5F7FA; /* Gris muy suave solo para el fondo de tabs */
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #666;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background-color: white;
+    color: #1976D2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- FORMULARIO --- */
+.form-group { margin-bottom: 15px; }
+.form-group label {
+    display: block; margin-bottom: 6px;
+    font-weight: 600; color: #444; font-size: 0.9rem;
+}
+.form-group input {
+    width: 100%; padding: 12px;
+    border: 1px solid #DDD; border-radius: 6px;
+    font-size: 1rem; transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.form-group input:focus {
+    border-color: #1976D2; outline: none;
+}
+
+/* --- LISTA DE USUARIOS PERSONALIZADA --- */
+.user-selection-list {
+    border: 1px solid #EEE;
+    border-radius: 8px;
+    max-height: 250px;
+    overflow-y: auto;
+    background: white;
+}
+
+.user-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #F0F0F0;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    transition: background 0.2s;
+}
+
+.user-item:last-child { border-bottom: none; }
+
+.user-item:hover { background-color: #F5F9FF; }
+
+.user-item.selected {
+    background-color: #E3F2FD; /* Azul muy claro */
+    border-left: 4px solid #1976D2;
+}
+
+.user-avatar {
+    width: 36px; height: 36px;
+    background-color: #1976D2;
+    color: white;
+    border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-weight: bold; font-size: 1rem;
+}
+
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-weight: 600; color: #333; }
+.user-meta { font-size: 0.8rem; color: #777; }
+
+/* --- MENSAJES DE ESTADO --- */
+.status-message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.status-message.error {
+    background-color: #FFEBEE; color: #D32F2F; border: 1px solid #FFCDD2;
+}
+.status-message.success {
+    background-color: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9;
+}
+
+.btn-primary {
+    width: 100%; padding: 12px; margin-top: 10px;
+    font-size: 1rem; font-weight: bold;
+    border-radius: 8px;
+}

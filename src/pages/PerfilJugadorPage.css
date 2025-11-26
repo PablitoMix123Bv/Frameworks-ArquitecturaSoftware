@@ -1,0 +1,77 @@
+/* src/pages/PerfilJugadorPage.css */
+
+.perfil-jugador-page {
+    padding: 30px;
+}
+
+.perfil-header-jugador {
+    text-align: center;
+    border-bottom: 2px solid #E0E0E0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.perfil-header-jugador h1 {
+    font-size: 2.5rem;
+    color: #1976D2;
+    margin-bottom: 5px;
+}
+
+.perfil-rol {
+    color: #555;
+    font-style: italic;
+}
+
+.perfil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas */
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.card-detalle {
+    background-color: #F8F8F8;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.card-detalle h3 {
+    color: #333;
+    border-bottom: 1px solid #CCC;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.card-detalle p {
+    line-height: 1.8;
+}
+
+.edit-btn {
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Estilos de la Sección de Estadísticas */
+.stats-box {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.stat-item h4 {
+    font-size: 2rem;
+    color: #1976D2;
+    margin-bottom: 5px;
+}
+
+.stat-item p {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.historial-seccion {
+    padding: 20px 0;
+    border-top: 1px solid #E0E0E0;
+}

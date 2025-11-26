@@ -1,0 +1,108 @@
+/* src/main.css - ESTILOS GLOBALES UNIFICADOS */
+
+:root {
+    --primary-color: #1976D2;       /* Azul Principal */
+    --primary-hover: #1565C0;       /* Azul Oscuro (Hover) */
+    --secondary-color: #f44336;     /* Rojo (Eliminar/Cancelar) */
+    --background-color: #f0f2f5;    /* Fondo gris suave */
+    --text-color: #333333;
+    --border-radius: 12px;          /* Redondeado estándar moderno */
+    --input-bg: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+body, html {
+    margin: 0; padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+/* Contenedor Principal */
+.content-container {
+    max-width: 1400px; width: 95%;
+    margin: 30px auto; padding: 30px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    min-height: 75vh;
+}
+
+/* --- BOTONES ESTÁNDAR --- */
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px; /* Redondeado estilo "Pastilla" */
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 0.95rem;
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+
+.btn-danger { background-color: var(--secondary-color); color: white; }
+.btn-danger:hover { background-color: #d32f2f; }
+
+.btn-icon {
+    background: transparent; border: none; cursor: pointer;
+    font-size: 1.2rem; color: #666; transition: color 0.2s;
+    padding: 5px;
+}
+.btn-icon:hover { color: var(--primary-color); }
+
+/* --- FORMULARIOS Y MODALES (Diseño Unificado) --- */
+/* Usaremos estas clases en TODOS los formularios */
+
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000;
+}
+
+.modal-content-unified {
+    background-color: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    width: 90%; max-width: 500px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    max-height: 90vh; overflow-y: auto;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.modal-header { margin-bottom: 20px; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.modal-header h2 { margin: 0; color: var(--primary-color); font-size: 1.5rem; }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; color: #444; }
+
+/* Inputs Estéticos */
+.form-control {
+    width: 100%; padding: 12px;
+    border: 1px solid #ddd; border-radius: 8px;
+    font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; font-family: inherit;
+}
+.form-control:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1); }
+textarea.form-control { resize: vertical; min-height: 80px; }
+
+/* Layout de Formularios */
+.form-row { display: flex; gap: 15px; }
+.form-col { flex: 1; }
+
+.modal-close-btn {
+    position: absolute; top: 15px; right: 15px;
+    background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;
+}
+.modal-close-btn:hover { color: var(--secondary-color); }

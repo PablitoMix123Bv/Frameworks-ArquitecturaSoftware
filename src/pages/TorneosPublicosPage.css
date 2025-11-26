@@ -1,0 +1,35 @@
+/* src/pages/TorneosPublicosPage.css */
+
+.torneos-list {
+    margin-top: 20px;
+}
+
+/* Estilo para la tarjeta pública (diferente a la de admin) */
+.card-torneo-publico {
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-left: 5px solid #1976D2; /* Acabado azul */
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s;
+}
+
+.card-torneo-publico:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.card-torneo-publico h3 {
+    margin: 0 0 10px 0;
+    color: #1976D2;
+}
+
+.card-torneo-publico p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.card-torneo-publico p strong {
+    color: #333;
+}
